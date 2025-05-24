@@ -49,27 +49,30 @@
 
 ---
 
-## 📁 Firestore Structure
+## 🧠 AI Capabilities (Firebase GenKit/Firebase ML)
 
-```plaintext
-users/
-  uid/
-    name, role, location, phone
+- 🔍 **Voice Search in Swahili** (e.g., “Tafuta nyanya”)
+- 🧾 **Product recommendations** for buyers
+- 📊 **Smart trend analysis** for sellers
+- ✅ **Organic certification label suggestions**
 
-products/
-  pid/
-    sellerId, name, price, stock, photoUrl, freshness, fertilizerUsed, organicFlag
+---
 
-orders/
-  orderId/
-    buyerId, sellerId, items[], status, timestamps
+## ⚙️ Tech Stack
 
-market_prices/
-  county/
-    product, price, price_change_percent
+- **Frontend**: Flutter (or Web if you’re using React)
+- **Backend**: Firebase (Firestore, Auth, Functions, Hosting)
+- **Payments**: M-Pesa, Flutterwave
+- **AI**: Firebase AI GenKit / Firebase ML
+- **Storage**: Firebase Cloud Storage
 
-search_trends/
-  product, count, location
+---
 
-notifications/
-  userId, message, timestamp
+## 📦 Getting Started
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/your-username/mama-mboga.git
+cd mama-mboga
+
