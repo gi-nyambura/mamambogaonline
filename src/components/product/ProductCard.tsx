@@ -30,7 +30,7 @@ export function ProductCard({ product }: ProductCardProps) {
       <CardHeader className="p-0 relative">
         <Link
           href={`/products/${product.id}`}
-          className="block w-full h-48 relative overflow-hidden rounded-t-lg"
+          className="block w-full aspect-[4/3] relative overflow-hidden rounded-t-lg"
         >
           <Image
             src={product.imageUrl}
