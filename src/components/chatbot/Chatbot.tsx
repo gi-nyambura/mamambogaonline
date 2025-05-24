@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useRef, useEffect, type FormEvent } from 'react';
@@ -113,7 +114,7 @@ export function Chatbot() {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button
-          className="fixed bottom-6 right-6 rounded-full h-16 w-16 shadow-xl border-2 border-background"
+          className="fixed bottom-6 right-6 rounded-full h-16 w-16 shadow-xl border-2 border-background z-[60]"
           size="icon"
           aria-label="Open chat"
         >
