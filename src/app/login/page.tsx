@@ -1,105 +1,94 @@
 
 "use client"; 
 
-import { useState, useEffect } from "react"; // Added useEffect
+import { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Lock, Mail, User, ShoppingBag, AlertCircle } from "lucide-react";
+import { Lock, Mail, User, ShoppingBag, AlertCircle, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { Logo } from "@/components/common/Logo";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-
-// Mock user data (in a real app, this would come from a backend)
-const mockUsers = [
-  { id: '1', email: 'buyer@example.com', password: 'password123', role: 'buyer', name: 'Test Buyer' },
-  { id: '2', email: 'seller@example.com', password: 'password123', role: 'seller', name: 'Test Seller' },
-  { id: '3', email: 'jane@example.com', password: 'password', role: 'buyer', name: 'Jane Doe' },
-];
-
-interface NewlyRegisteredUser {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  password: string;
-  role: 'buyer' | 'seller';
-}
+import { auth, db } from "@/lib/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { useAuth } from "@/providers/AuthProvider";
 
 export default function LoginPage() {
-  const [loginAs, setLoginAs] = useState("buyer");
+  const [loginAs, setLoginAs] = useState<'buyer' | 'seller'>("buyer");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const [newlyRegisteredUserDetails, setNewlyRegisteredUserDetails] = useState<NewlyRegisteredUser | null>(null);
+  const { user: authUser, loadingAuthState } = useAuth(); // Get auth state
 
+  // Redirect if already logged in
   useEffect(() => {
-    const storedUserDetails = localStorage.getItem('newlyRegisteredUser');
-    if (storedUserDetails) {
-      try {
-        const userDetails: NewlyRegisteredUser = JSON.parse(storedUserDetails);
-        setNewlyRegisteredUserDetails(userDetails);
-        setEmail(userDetails.email); // Pre-fill email
-        setPassword(userDetails.password); // Pre-fill password
-        setLoginAs(userDetails.role || 'buyer'); // Pre-fill role
-        localStorage.removeItem('newlyRegisteredUser'); // Clean up immediately
-      } catch (e) {
-        console.error("Error parsing stored user details from localStorage", e);
-        localStorage.removeItem('newlyRegisteredUser'); // Clean up on error too
-      }
+    if (!loadingAuthState && authUser) {
+      router.push('/');
     }
-  }, []); // Empty dependency array, runs once on mount
+  }, [authUser, loadingAuthState, router]);
 
-  const handleLogin = () => {
-    setError(null); // Clear previous errors
 
-    // Check against newly registered user first
-    if (newlyRegisteredUserDetails &&
-        newlyRegisteredUserDetails.email === email &&
-        newlyRegisteredUserDetails.password === password &&
-        newlyRegisteredUserDetails.role === loginAs) {
-      
-      console.log("Login successful for newly registered user:", {
-        email: newlyRegisteredUserDetails.email,
-        name: `${newlyRegisteredUserDetails.firstName} ${newlyRegisteredUserDetails.lastName}`,
-        role: newlyRegisteredUserDetails.role,
-      });
-      // In a real app, set auth state (e.g., JWT token)
-      router.push('/'); 
+  const handleLogin = async () => {
+    setError(null);
+    setIsLoading(true);
+
+    if (!email || !password) {
+      setError("Please enter both email and password.");
+      setIsLoading(false);
       return;
     }
 
-    // Fallback to checking mockUsers
-    const user = mockUsers.find(u => u.email === email);
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const firebaseUser = userCredential.user;
 
-    if (!user) {
-       if (newlyRegisteredUserDetails && newlyRegisteredUserDetails.email === email) {
-        setError("Details from your recent sign-up don't match. Please check your password and selected role ('Buyer').");
+      // Fetch user role from Firestore
+      const userDocRef = doc(db, "users", firebaseUser.uid);
+      const userDocSnap = await getDoc(userDocRef);
+
+      if (userDocSnap.exists()) {
+        const userData = userDocSnap.data();
+        if (userData.role === loginAs) {
+          console.log("Login successful for:", firebaseUser.email, "as", userData.role);
+          router.push('/'); 
+        } else {
+          setError(`This account is registered as a ${userData.role}. Please select the correct login type or contact support if this is an error.`);
+          await auth.signOut(); // Sign out if role mismatch
+        }
       } else {
-        setError("User not registered. Please sign up.");
+        // This case should ideally not happen if user data is created on signup
+        setError("User data not found. Please contact support.");
+        await auth.signOut();
       }
-      return;
+    } catch (firebaseError: any) {
+      console.error("Firebase Login Error:", firebaseError);
+      if (firebaseError.code === 'auth/user-not-found' || firebaseError.code === 'auth/wrong-password' || firebaseError.code === 'auth/invalid-credential') {
+        setError("Invalid email or password.");
+      } else if (firebaseError.code === 'auth/too-many-requests') {
+        setError("Too many login attempts. Please try again later.");
+      }
+      else {
+        setError("Login failed. Please try again.");
+      }
+    } finally {
+      setIsLoading(false);
     }
-
-    if (user.password !== password) {
-      setError("Invalid email or password.");
-      return;
-    }
-
-    if (user.role !== loginAs) {
-      setError(`This account is registered as a ${user.role}. Please select the correct login type.`);
-      return;
-    }
-
-    // Simulate successful login for mockUsers
-    console.log("Login successful for mock user:", user);
-    // In a real app, you would set some authentication state
-    router.push('/'); 
   };
+
+  if (loadingAuthState) {
+     return (
+      <div className="flex min-h-screen flex-col items-center justify-center">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+      </div>
+    );
+  }
+
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-primary/10 via-background to-accent/10 p-4">
@@ -122,8 +111,9 @@ export default function LoginPage() {
             <Label className="text-base font-medium">Login as:</Label>
             <RadioGroup
               value={loginAs}
-              onValueChange={setLoginAs}
+              onValueChange={(value) => setLoginAs(value as 'buyer' | 'seller')}
               className="grid grid-cols-2 gap-4"
+              disabled={isLoading}
             >
               <div>
                 <RadioGroupItem value="buyer" id="buyer" className="peer sr-only" />
@@ -158,6 +148,7 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              disabled={isLoading}
             />
           </div>
           <div className="space-y-2">
@@ -175,12 +166,13 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              disabled={isLoading}
             />
           </div>
         </CardContent>
         <CardFooter className="flex flex-col gap-4">
-          <Button className="w-full" size="lg" onClick={handleLogin}>
-            Sign In as {loginAs === 'buyer' ? 'Buyer' : 'Seller'}
+          <Button className="w-full" size="lg" onClick={handleLogin} disabled={isLoading}>
+            {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : `Sign In as ${loginAs === 'buyer' ? 'Buyer' : 'Seller'}`}
           </Button>
           <p className="text-sm text-center text-muted-foreground">
             Don&apos;t have an account?{' '}

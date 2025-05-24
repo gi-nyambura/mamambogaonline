@@ -8,10 +8,13 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Lock, Mail, User, Phone, AlertCircle } from "lucide-react";
+import { Lock, Mail, User, Phone, AlertCircle, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { Logo } from "@/components/common/Logo";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { auth, db } from "@/lib/firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -24,54 +27,66 @@ export default function SignupPage() {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSignup = async (event: React.FormEvent) => {
     event.preventDefault();
     setError(null);
     setSuccessMessage(null);
+    setIsLoading(true);
 
-    // Basic Validations
     if (!firstName || !lastName || !email || !phone || !password || !confirmPassword) {
       setError("Please fill in all required fields.");
+      setIsLoading(false);
       return;
     }
     if (password !== confirmPassword) {
       setError("Passwords do not match.");
+      setIsLoading(false);
       return;
     }
     if (password.length < 6) {
       setError("Password must be at least 6 characters long.");
+      setIsLoading(false);
       return;
     }
     if (!termsAccepted) {
       setError("You must accept the terms and conditions.");
+      setIsLoading(false);
       return;
     }
-
-    // Simulate account creation & store for login page
-    const newUserDetails = {
-      firstName,
-      lastName,
-      email,
-      phone,
-      password, // In a real app, password would be hashed before storing/sending
-      role: 'buyer', // Default role for new signups
-    };
 
     try {
-      localStorage.setItem('newlyRegisteredUser', JSON.stringify(newUserDetails));
-      console.log("Account details stored for login:", newUserDetails);
-    } catch (e) {
-      console.error("Could not save user to localStorage", e);
-      setError("Could not process signup. Please try again.");
-      return;
-    }
-    
-    setSuccessMessage("Account created successfully! Redirecting to login...");
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
 
-    setTimeout(() => {
-      router.push('/login');
-    }, 2000);
+      // Store additional user info in Firestore
+      await setDoc(doc(db, "users", user.uid), {
+        firstName,
+        lastName,
+        email,
+        phone,
+        role: 'buyer', // Default role for new signups
+        createdAt: new Date(),
+      });
+      
+      setSuccessMessage("Account created successfully! Redirecting to login...");
+      setIsLoading(false);
+      setTimeout(() => {
+        router.push('/login');
+      }, 2000);
+
+    } catch (firebaseError: any) {
+      console.error("Firebase Signup Error:", firebaseError);
+      if (firebaseError.code === 'auth/email-already-in-use') {
+        setError("This email address is already in use. Please try another.");
+      } else if (firebaseError.code === 'auth/weak-password') {
+        setError("The password is too weak. Please choose a stronger password.");
+      } else {
+        setError("Failed to create account. Please try again.");
+      }
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -108,6 +123,7 @@ export default function SignupPage() {
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                   required
+                  disabled={isLoading}
                 />
               </div>
               <div className="space-y-1">
@@ -119,6 +135,7 @@ export default function SignupPage() {
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                   required
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -132,6 +149,7 @@ export default function SignupPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                disabled={isLoading}
               />
             </div>
             <div className="space-y-1">
@@ -144,6 +162,7 @@ export default function SignupPage() {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 required
+                disabled={isLoading}
               />
             </div>
             <div className="space-y-1">
@@ -156,6 +175,7 @@ export default function SignupPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                disabled={isLoading}
               />
             </div>
             <div className="space-y-1">
@@ -168,6 +188,7 @@ export default function SignupPage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
+                disabled={isLoading}
               />
             </div>
             <div className="flex items-center space-x-2 pt-1">
@@ -175,6 +196,7 @@ export default function SignupPage() {
                 id="terms" 
                 checked={termsAccepted}
                 onCheckedChange={(checked) => setTermsAccepted(checked as boolean)}
+                disabled={isLoading}
               />
               <Label htmlFor="terms" className="text-sm font-normal text-muted-foreground cursor-pointer">
                 I agree to the{' '}
@@ -185,7 +207,9 @@ export default function SignupPage() {
             </div>
           </CardContent>
           <CardFooter className="flex flex-col gap-4">
-            <Button type="submit" className="w-full" size="lg">Create Account</Button>
+            <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
+              {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Create Account"}
+            </Button>
             <p className="text-sm text-center text-muted-foreground">
               Already have an account?{' '}
               <Link href="/login" className="font-medium text-primary hover:underline">
