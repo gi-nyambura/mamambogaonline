@@ -114,11 +114,11 @@ export function Chatbot() {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button
-          className="fixed bottom-6 right-6 rounded-full h-16 w-16 shadow-xl border-2 border-background z-[60]"
+          className="fixed bottom-6 right-6 rounded-full h-14 w-14 shadow-xl border-2 border-background z-[60]"
           size="icon"
           aria-label="Open chat"
         >
-          <MessageSquare className="h-7 w-7" />
+          <MessageSquare className="h-6 w-6" />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md w-[90vw] p-0 flex flex-col h-[80vh] max-h-[650px] shadow-2xl rounded-lg">

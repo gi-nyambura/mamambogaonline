@@ -104,7 +104,8 @@ export function ProductFilters() {
         <h3 className="text-xl font-semibold mb-4 font-poppins">Filters</h3>
         {filtersContent}
       </div>
-      <div className="lg:hidden fixed bottom-4 right-4 z-50">
+      {/* Mobile Filters Button - positioned above chatbot */}
+      <div className="lg:hidden fixed bottom-24 right-6 z-50"> {/* 6rem = 96px from bottom */}
         <Sheet>
           <SheetTrigger asChild>
             <Button size="lg" className="rounded-full shadow-xl">
