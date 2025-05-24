@@ -7,7 +7,7 @@ import { ShoppingCart, UserCircle, Search, Menu } from 'lucide-react';
 import { Logo } from './Logo';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 
@@ -71,9 +71,12 @@ export function Header() {
                 <span className="sr-only">Toggle menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-full max-w-xs bg-background p-6">
-              <div className="flex flex-col space-y-6">
-                <Logo />
+            <SheetContent side="left" className="w-full max-w-xs bg-background p-0">
+              <SheetHeader className="p-6 pb-2 border-b">
+                <SheetTitle className="sr-only">Mobile Navigation Menu</SheetTitle>
+                 <Logo /> {/* Moved Logo here to be part of the header */}
+              </SheetHeader>
+              <div className="flex flex-col space-y-6 p-6 pt-4">
                 <div className="relative">
                   <Input type="search" placeholder="Search produce..." className="pr-10 h-9" />
                    <Button variant="ghost" size="icon" className="absolute right-0 top-0 h-9 w-9 text-muted-foreground">
@@ -95,7 +98,7 @@ export function Header() {
                     </Link>
                   ))}
                 </nav>
-                <div className="flex flex-col space-y-2">
+                <div className="flex flex-col space-y-2 pt-4 border-t">
                     <Button variant="outline" asChild>
                         <Link href="/login" onClick={() => setMobileMenuOpen(false)}>Login</Link>
                     </Button>
