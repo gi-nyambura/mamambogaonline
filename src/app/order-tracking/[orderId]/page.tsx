@@ -1,7 +1,7 @@
 
 import { AppShell } from "@/components/layout/AppShell";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"; // Added CardFooter
 import { Separator } from "@/components/ui/separator";
 import { CheckCircle, Circle, Package, ThumbsUp, Truck, MapPin as MapPinIcon } from "lucide-react";
 import Link from "next/link";
