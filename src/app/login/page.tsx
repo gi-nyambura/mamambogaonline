@@ -1,8 +1,8 @@
 
 "use client"; 
 
-import { useState } from "react";
-import { useRouter } from 'next/navigation'; // Import useRouter
+import { useState, useEffect } from "react"; // Added useEffect
+import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -11,7 +11,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Lock, Mail, User, ShoppingBag, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { Logo } from "@/components/common/Logo";
-import { Alert, AlertDescription } from "@/components/ui/alert"; // Import Alert components
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 // Mock user data (in a real app, this would come from a backend)
 const mockUsers = [
@@ -20,20 +20,68 @@ const mockUsers = [
   { id: '3', email: 'jane@example.com', password: 'password', role: 'buyer', name: 'Jane Doe' },
 ];
 
+interface NewlyRegisteredUser {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  password: string;
+  role: 'buyer' | 'seller';
+}
+
 export default function LoginPage() {
   const [loginAs, setLoginAs] = useState("buyer");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const [newlyRegisteredUserDetails, setNewlyRegisteredUserDetails] = useState<NewlyRegisteredUser | null>(null);
+
+  useEffect(() => {
+    const storedUserDetails = localStorage.getItem('newlyRegisteredUser');
+    if (storedUserDetails) {
+      try {
+        const userDetails: NewlyRegisteredUser = JSON.parse(storedUserDetails);
+        setNewlyRegisteredUserDetails(userDetails);
+        setEmail(userDetails.email); // Pre-fill email
+        setPassword(userDetails.password); // Pre-fill password
+        setLoginAs(userDetails.role || 'buyer'); // Pre-fill role
+        localStorage.removeItem('newlyRegisteredUser'); // Clean up immediately
+      } catch (e) {
+        console.error("Error parsing stored user details from localStorage", e);
+        localStorage.removeItem('newlyRegisteredUser'); // Clean up on error too
+      }
+    }
+  }, []); // Empty dependency array, runs once on mount
 
   const handleLogin = () => {
     setError(null); // Clear previous errors
 
+    // Check against newly registered user first
+    if (newlyRegisteredUserDetails &&
+        newlyRegisteredUserDetails.email === email &&
+        newlyRegisteredUserDetails.password === password &&
+        newlyRegisteredUserDetails.role === loginAs) {
+      
+      console.log("Login successful for newly registered user:", {
+        email: newlyRegisteredUserDetails.email,
+        name: `${newlyRegisteredUserDetails.firstName} ${newlyRegisteredUserDetails.lastName}`,
+        role: newlyRegisteredUserDetails.role,
+      });
+      // In a real app, set auth state (e.g., JWT token)
+      router.push('/'); 
+      return;
+    }
+
+    // Fallback to checking mockUsers
     const user = mockUsers.find(u => u.email === email);
 
     if (!user) {
-      setError("User not registered. Please sign up.");
+       if (newlyRegisteredUserDetails && newlyRegisteredUserDetails.email === email) {
+        setError("Details from your recent sign-up don't match. Please check your password and selected role ('Buyer').");
+      } else {
+        setError("User not registered. Please sign up.");
+      }
       return;
     }
 
@@ -47,10 +95,9 @@ export default function LoginPage() {
       return;
     }
 
-    // Simulate successful login
-    console.log("Login successful for:", user);
-    // In a real app, you would set some authentication state (e.g., JWT token in cookies/localStorage)
-    // For now, we'll just redirect
+    // Simulate successful login for mockUsers
+    console.log("Login successful for mock user:", user);
+    // In a real app, you would set some authentication state
     router.push('/'); 
   };
 
@@ -74,7 +121,6 @@ export default function LoginPage() {
           <div className="space-y-3">
             <Label className="text-base font-medium">Login as:</Label>
             <RadioGroup
-              defaultValue="buyer"
               value={loginAs}
               onValueChange={setLoginAs}
               className="grid grid-cols-2 gap-4"

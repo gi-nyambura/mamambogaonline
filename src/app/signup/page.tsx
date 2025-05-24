@@ -48,17 +48,25 @@ export default function SignupPage() {
       return;
     }
 
-    // Simulate account creation
-    console.log("Simulating account creation with data:", {
+    // Simulate account creation & store for login page
+    const newUserDetails = {
       firstName,
       lastName,
       email,
       phone,
-      password, // In a real app, NEVER log passwords
-    });
+      password, // In a real app, password would be hashed before storing/sending
+      role: 'buyer', // Default role for new signups
+    };
 
-    // In a real app, you would make an API call here.
-    // For this prototype, we'll just show a success message and redirect.
+    try {
+      localStorage.setItem('newlyRegisteredUser', JSON.stringify(newUserDetails));
+      console.log("Account details stored for login:", newUserDetails);
+    } catch (e) {
+      console.error("Could not save user to localStorage", e);
+      setError("Could not process signup. Please try again.");
+      return;
+    }
+    
     setSuccessMessage("Account created successfully! Redirecting to login...");
 
     setTimeout(() => {
@@ -86,7 +94,7 @@ export default function SignupPage() {
             )}
             {successMessage && (
               <Alert variant="default" className="bg-green-100 border-green-300 text-green-700">
-                <AlertCircle className="h-4 w-4 text-green-700" /> {/* Make icon green too */}
+                <AlertCircle className="h-4 w-4 text-green-700" />
                 <AlertDescription>{successMessage}</AlertDescription>
               </Alert>
             )}
