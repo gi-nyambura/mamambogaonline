@@ -103,7 +103,7 @@ export default function CheckoutPage() {
                 {cartSummary.items.map((item, index) => (
                   <li key={index} className="flex items-center justify-between text-sm">
                     <div className="flex items-center gap-2">
-                      <Image src={item.imageUrl} alt={item.name} width={40} height={40} className="rounded" data-ai-hint={item.dataAiHint} />
+                      <Image src={item.imageUrl} alt={item.name} width={40} height={40} className="rounded object-cover" data-ai-hint={item.dataAiHint} />
                       <div>
                         <span>{item.name}</span>
                         <span className="text-muted-foreground"> (x{item.quantity})</span>

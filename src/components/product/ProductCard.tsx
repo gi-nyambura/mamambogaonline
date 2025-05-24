@@ -28,18 +28,21 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col h-full rounded-lg">
       <CardHeader className="p-0 relative">
-        <Link href={`/products/${product.id}`} className="block">
+        <Link
+          href={`/products/${product.id}`}
+          className="block w-full h-48 relative overflow-hidden rounded-t-lg"
+        >
           <Image
             src={product.imageUrl}
             alt={product.name}
-            width={400}
-            height={300}
-            className="w-full h-48 object-cover"
+            fill
+            className="object-cover"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             data-ai-hint={product.dataAiHint}
           />
         </Link>
         {product.originalPrice && (
-          <Badge variant="destructive" className="absolute top-2 right-2 text-xs">
+          <Badge variant="destructive" className="absolute top-2 right-2 text-xs z-10">
             <Zap className="w-3 h-3 mr-1" />
             {(
               ((product.originalPrice - product.price) / product.originalPrice) *
@@ -49,7 +52,7 @@ export function ProductCard({ product }: ProductCardProps) {
           </Badge>
         )}
         {product.isOrganic && (
-           <Badge variant="secondary" className="absolute top-2 left-2 text-xs bg-green-100 text-green-700 border-green-300">
+           <Badge variant="secondary" className="absolute top-2 left-2 text-xs z-10 bg-green-100 text-green-700 border-green-300">
             <Leaf className="w-3 h-3 mr-1" /> Organic
           </Badge>
         )}
