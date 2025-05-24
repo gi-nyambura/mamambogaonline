@@ -17,13 +17,13 @@ export default function HomePage() {
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: "url('https://placehold.co/1920x1080.png')",
+            backgroundImage: "url('https://source.unsplash.com/1920x1080/?farm,produce,pattern')",
             opacity: 0.15, 
           }}
-          data-ai-hint="produce pattern" 
+          data-ai-hint="farm produce transparent pattern" 
         ></div>
         <div
-          className="absolute inset-0 bg-gradient-to-r from-primary/90 via-primary/80 to-primary/70" 
+          className="absolute inset-0 bg-gradient-to-r from-green-500/90 via-green-600/80 to-green-700/70"
         ></div>
         
         <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 text-center">
