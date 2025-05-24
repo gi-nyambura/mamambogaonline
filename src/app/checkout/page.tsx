@@ -15,8 +15,8 @@ import Link from "next/link";
 // Mock cart summary for display
 const cartSummary = {
   items: [
-    { name: mockProducts[0].name, quantity: 2, price: mockProducts[0].price, imageUrl: mockProducts[0].imageUrl, dataAiHint: mockProducts[0].dataAiHint },
-    { name: mockProducts[1].name, quantity: 1, price: mockProducts[1].price, imageUrl: mockProducts[1].imageUrl, dataAiHint: mockProducts[1].dataAiHint },
+    { name: mockProducts[0].name, quantity: 2, price: mockProducts[0].price, imageUrl: "https://placehold.co/60x60.png", dataAiHint: mockProducts[0].dataAiHint },
+    { name: mockProducts[1].name, quantity: 1, price: mockProducts[1].price, imageUrl: "https://placehold.co/60x60.png", dataAiHint: mockProducts[1].dataAiHint },
   ],
   subtotal: mockProducts[0].price * 2 + mockProducts[1].price,
   deliveryFee: 150,

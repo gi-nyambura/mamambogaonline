@@ -17,10 +17,10 @@ export default function HomePage() {
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: "url('https://source.unsplash.com/1920x1080/?farm,produce,pattern')",
+            backgroundImage: "url('https://placehold.co/1920x1080.png')", // Updated placeholder
             opacity: 0.15, 
           }}
-          data-ai-hint="farm produce transparent pattern" 
+          data-ai-hint="farm produce pattern" 
         ></div>
         <div
           className="absolute inset-0 bg-gradient-to-r from-green-500/90 via-green-600/80 to-green-700/70"
