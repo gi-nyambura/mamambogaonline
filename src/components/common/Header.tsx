@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { ShoppingCart, UserCircle, Search, Menu, LogOut, User as UserIcon, Loader2 } from 'lucide-react';
+import { ShoppingCart, UserCircle, Search, Menu, LogOut, User as UserIcon, Loader2, Truck, Archive } from 'lucide-react'; // Changed PackageIcon to Archive
 import { Logo } from './Logo';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,6 +21,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuGroup,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -29,8 +30,21 @@ const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/market-prices', label: 'Market Prices' },
   { href: '/offers', label: 'Offers' },
-  // Conditional "Sell" link based on role can be added here or managed via AuthProvider
 ];
+
+const buyerNavLinks = [
+  { href: '/my-orders', label: 'My Orders', icon: Archive }, // Using Archive as a common icon
+];
+
+const sellerNavLinks = [
+  { href: '/seller/dashboard', label: 'Dashboard', icon: UserIcon },
+  { href: '/seller/products', label: 'My Products', icon: Archive }, // Changed from PackageIcon to Archive
+  { href: '/seller/orders', label: 'Customer Orders', icon: ShoppingCart },
+  { href: '/seller/deliveries', label: 'Track Deliveries', icon: Truck },
+  { href: '/seller/analytics', label: 'Analytics', icon: Loader2 }, 
+  { href: '/seller/recommendations', label: 'AI Recommendations', icon: Search }, 
+];
+
 
 export function Header() {
   const pathname = usePathname();
@@ -44,11 +58,10 @@ export function Header() {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      router.push('/login'); // Redirect to login page after logout
+      router.push('/login'); 
       if (mobileMenuOpen) setMobileMenuOpen(false);
     } catch (error) {
       console.error("Error signing out: ", error);
-      // Handle error (e.g., show a toast notification)
     }
   };
   
@@ -65,9 +78,21 @@ export function Header() {
     return "U";
   }
 
-  const dynamicNavLinks = [...navLinks];
-  if (user?.role === 'seller') {
-    dynamicNavLinks.push({ href: '/seller/dashboard', label: 'My Dashboard' });
+  const commonNavLinks = [...navLinks];
+  let roleSpecificNavLinks: { href: string; label: string; icon: React.ElementType }[] = [];
+  let profileLink = "/profile";
+  let profileLabel = "My Profile";
+
+  if (user) {
+    if (user.role === 'seller') {
+      profileLink = "/seller/dashboard"; 
+      profileLabel = "Seller Dashboard";
+      roleSpecificNavLinks = sellerNavLinks;
+    } else { 
+      profileLink = "/my-orders"; // Buyer's main profile/orders page
+      profileLabel = "My Orders";
+      roleSpecificNavLinks = buyerNavLinks; 
+    }
   }
 
 
@@ -77,7 +102,7 @@ export function Header() {
         <Logo />
         
         <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
-          {dynamicNavLinks.map((link) => (
+          {commonNavLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -120,24 +145,39 @@ export function Header() {
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56" align="end" forceMount>
+              <DropdownMenuContent className="w-64" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm font-medium leading-none">
-                      {user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : user.displayName || "User Profile"}
+                      {user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : user.displayName || "User"}
                     </p>
                     <p className="text-xs leading-none text-muted-foreground">
-                      {user.email}
+                      {user.email} ({user.role})
                     </p>
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link href={user.role === 'seller' ? "/seller/dashboard" : "/profile"}> {/* Adjust link as needed */}
+                  <Link href={profileLink}>
                     <UserIcon className="mr-2 h-4 w-4" />
-                    <span>{user.role === 'seller' ? "Dashboard" : "Profile"}</span>
+                    <span>{profileLabel}</span>
                   </Link>
                 </DropdownMenuItem>
+                
+                {roleSpecificNavLinks.length > 0 && (
+                    <DropdownMenuGroup>
+                         <DropdownMenuSeparator />
+                        {roleSpecificNavLinks.map(link => (
+                             <DropdownMenuItem key={link.href} asChild>
+                                <Link href={link.href}>
+                                    <link.icon className="mr-2 h-4 w-4" />
+                                    <span>{link.label}</span>
+                                </Link>
+                            </DropdownMenuItem>
+                        ))}
+                    </DropdownMenuGroup>
+                )}
+
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout}>
                   <LogOut className="mr-2 h-4 w-4" />
@@ -174,7 +214,7 @@ export function Header() {
                   </Button>
                 </div>
                 <nav className="flex flex-col space-y-4">
-                  {dynamicNavLinks.map((link) => (
+                  {commonNavLinks.map((link) => (
                     <Link
                       key={link.href}
                       href={link.href}
@@ -187,14 +227,27 @@ export function Header() {
                       {link.label}
                     </Link>
                   ))}
+                  {user && roleSpecificNavLinks.map((link) => (
+                     <Link
+                      key={link.href}
+                      href={link.href}
+                      className={cn(
+                        "text-lg font-medium transition-colors hover:text-primary flex items-center",
+                        pathname === link.href ? "text-primary" : "text-foreground/80"
+                      )}
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <link.icon className="mr-2 h-5 w-5" /> {link.label}
+                    </Link>
+                  ))}
                 </nav>
                 <div className="flex flex-col space-y-2 pt-4 border-t">
                     {loadingAuthState ? (
                        <Button variant="outline" disabled><Loader2 className="mr-2 h-4 w-4 animate-spin"/>Loading...</Button>
                     ) : user ? (
                       <>
-                        <Button variant="outline" asChild onClick={() => { router.push(user.role === 'seller' ? "/seller/dashboard" : "/profile"); setMobileMenuOpen(false); }}>
-                           <Link href={user.role === 'seller' ? "/seller/dashboard" : "/profile"}>{user.firstName || "My Account"}</Link>
+                        <Button variant="outline" asChild onClick={() => { router.push(profileLink); setMobileMenuOpen(false); }}>
+                           <Link href={profileLink}>{user.firstName || profileLabel}</Link>
                         </Button>
                         <Button variant="destructive" onClick={handleLogout}>Log Out</Button>
                       </>
