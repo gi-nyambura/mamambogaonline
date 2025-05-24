@@ -13,8 +13,20 @@ export default function HomePage() {
   return (
     <AppShell>
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-primary/80 via-primary/70 to-accent/70 text-primary-foreground py-16 md:py-24">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <section className="relative bg-primary text-primary-foreground py-16 md:py-24">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: "url('https://placehold.co/1920x1080.png')",
+            opacity: 0.15, 
+          }}
+          data-ai-hint="produce pattern" 
+        ></div>
+        <div
+          className="absolute inset-0 bg-gradient-to-r from-primary/90 via-primary/80 to-primary/70" 
+        ></div>
+        
+        <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-poppins mb-4">
             Freshness Delivered, Your Way.
           </h1>
