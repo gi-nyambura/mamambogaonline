@@ -10,7 +10,7 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-export const ChatbotInputSchema = z.object({
+const ChatbotInputSchema = z.object({
   message: z.string().describe("The user's message to the chatbot."),
   history: z.array(z.object({
     user: z.string().optional().describe("The user's message in the history."),
@@ -19,7 +19,7 @@ export const ChatbotInputSchema = z.object({
 });
 export type ChatbotInput = z.infer<typeof ChatbotInputSchema>;
 
-export const ChatbotOutputSchema = z.object({
+const ChatbotOutputSchema = z.object({
   reply: z.string().describe('The chatbot\'s reply to the user.'),
 });
 export type ChatbotOutput = z.infer<typeof ChatbotOutputSchema>;
