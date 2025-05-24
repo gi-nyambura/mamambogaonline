@@ -9,7 +9,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from '@/lib/utils';
-import { useState } from 'react';
+import { useState, useEffect } from 'react'; // Added useEffect
+import { ThemeToggle } from './ThemeToggle'; // Added ThemeToggle import
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -21,6 +22,10 @@ const navLinks = [
 export function Header() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
+  // Prevent hydration errors for ThemeToggle by ensuring it only renders client-side
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -42,7 +47,7 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-2 md:space-x-4">
           <div className="hidden sm:flex relative">
             <Input type="search" placeholder="Search produce..." className="pr-10 h-9" />
             <Button variant="ghost" size="icon" className="absolute right-0 top-0 h-9 w-9 text-muted-foreground">
@@ -56,6 +61,9 @@ export function Header() {
               <span className="sr-only">Cart</span>
             </Link>
           </Button>
+
+          {mounted && <ThemeToggle />}
+
 
           <div className="hidden md:block">
              <Button variant="outline" size="sm" asChild>
@@ -73,8 +81,8 @@ export function Header() {
             </SheetTrigger>
             <SheetContent side="left" className="w-full max-w-xs bg-background p-0">
               <SheetHeader className="p-6 pb-2 border-b">
-                <SheetTitle className="sr-only">Mobile Navigation Menu</SheetTitle>
-                 <Logo /> {/* Moved Logo here to be part of the header */}
+                 <Logo /> 
+                 <SheetTitle className="sr-only">Mobile Navigation Menu</SheetTitle>
               </SheetHeader>
               <div className="flex flex-col space-y-6 p-6 pt-4">
                 <div className="relative">
