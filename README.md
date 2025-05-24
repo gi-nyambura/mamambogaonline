@@ -7,6 +7,8 @@
 ## 🔗 Live Demo
 > _[Add your hosted link here if deployed using Firebase Hosting]_
 
+## 🔗 Pitch deck link
+> https://www.canva.com/design/DAGkmcnjvDg/xCY6j76uTg3QiyYcZmIBrw/edit?utm_content=DAGkmcnjvDg&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
 ---
 
 ## 🚀 Tech Stack
