@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Filter, ListFilter } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "../ui/sheet";
 
 const categories = ["All", "Vegetables", "Fruits", "Leafy Greens", "Herbs"];
 const freshnessOptions = ["All", "Fresh", "1-day old", "2-days old"];
@@ -108,17 +108,21 @@ export function ProductFilters() {
       <div className="lg:hidden fixed bottom-24 right-6 z-50">
         <Sheet>
           <SheetTrigger asChild>
-            <Button 
-              size="icon" 
+            <Button
+              size="icon"
               className="rounded-full shadow-xl h-14 w-14"
               aria-label="Open filters"
             >
               <ListFilter className="h-6 w-6" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="bottom" className="h-[80vh] p-4 overflow-y-auto">
-             <h3 className="text-xl font-semibold mb-4 font-poppins">Filters</h3>
-            {filtersContent}
+          <SheetContent side="bottom" className="h-[80vh] p-4 flex flex-col overflow-y-auto">
+            <SheetHeader>
+             <SheetTitle className="text-xl font-semibold mb-4 font-poppins text-left">Filters</SheetTitle>
+            </SheetHeader>
+            <div className="overflow-y-auto flex-grow mt-4 pr-2"> 
+              {filtersContent}
+            </div>
           </SheetContent>
         </Sheet>
       </div>
