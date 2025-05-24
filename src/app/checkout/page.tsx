@@ -8,7 +8,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { mockProducts } from "@/data/products"; // For summary
-import { CreditCard, Home, Phone, User, MapPin, Edit2, Truck } from "lucide-react";
+import { CreditCard, Home, Phone, User, MapPin, Edit2, Truck, Wallet } from "lucide-react"; // Added Wallet icon
 import Image from "next/image";
 import Link from "next/link";
 
@@ -85,6 +85,14 @@ export default function CheckoutPage() {
                      <Image src="https://placehold.co/120x40.png?text=Flutterwave" alt="Flutterwave" width={120} height={40} data-ai-hint="flutterwave logo"/>
                     <span className="ml-auto font-medium">Card / Other</span>
                   </Label>
+                  <Label htmlFor="cash_on_delivery" className="flex items-center p-4 border rounded-md cursor-pointer hover:border-primary has-[input:checked]:border-primary has-[input:checked]:ring-2 has-[input:checked]:ring-primary">
+                    <RadioGroupItem value="cash_on_delivery" id="cash_on_delivery" className="mr-3" />
+                     <div className="flex items-center gap-2">
+                        <Wallet className="h-7 w-7 text-primary"/>
+                        <span className="font-medium">Cash on Delivery</span>
+                     </div>
+                    <span className="ml-auto font-medium text-sm text-muted-foreground">(Pay upon arrival)</span>
+                  </Label>
                 </RadioGroup>
               </CardContent>
             </Card>
@@ -139,3 +147,4 @@ export default function CheckoutPage() {
     </AppShell>
   );
 }
+
