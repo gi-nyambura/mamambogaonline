@@ -1,4 +1,6 @@
 
+"use client"; // Added "use client" for useRouter hook
+
 import { AppShell } from "@/components/layout/AppShell";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,6 +13,7 @@ import { mockProducts } from "@/data/products"; // For summary
 import { CreditCard, Home, Phone, User, MapPin, Edit2, Truck, Wallet } from "lucide-react"; // Added Wallet icon
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation"; // Imported useRouter
 
 // Mock cart summary for display
 const cartSummary = {
@@ -25,6 +28,18 @@ const cartSummary = {
 
 
 export default function CheckoutPage() {
+  const router = useRouter(); // Initialized useRouter
+
+  const handlePlaceOrder = () => {
+    // Simulate placing an order
+    const mockOrderId = `MOCKORD${Math.floor(Math.random() * 10000)}`;
+    console.log("Placing order with ID:", mockOrderId);
+    // In a real app, you would save the order to the database here
+
+    // Redirect to order tracking page
+    router.push(`/order-tracking/${mockOrderId}`);
+  };
+
   return (
     <AppShell>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
@@ -42,15 +57,15 @@ export default function CheckoutPage() {
               <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <Label htmlFor="fullName">Full Name</Label>
-                  <Input id="fullName" placeholder="e.g. Jane Doe" icon={<User className="h-4 w-4 text-muted-foreground" />} />
+                  <Input id="fullName" placeholder="e.g. Jane Doe" />
                 </div>
                 <div className="space-y-1">
                   <Label htmlFor="phone">Phone Number</Label>
-                  <Input id="phone" type="tel" placeholder="e.g. 0712 345 678" icon={<Phone className="h-4 w-4 text-muted-foreground" />} />
+                  <Input id="phone" type="tel" placeholder="e.g. 0712 345 678" />
                 </div>
                 <div className="sm:col-span-2 space-y-1">
                   <Label htmlFor="address">Street Address</Label>
-                  <Input id="address" placeholder="e.g. Apartment A2, Rose Garden" icon={<Home className="h-4 w-4 text-muted-foreground" />} />
+                  <Input id="address" placeholder="e.g. Apartment A2, Rose Garden" />
                 </div>
                 <div className="space-y-1">
                   <Label htmlFor="city">City / Town</Label>
@@ -137,7 +152,7 @@ export default function CheckoutPage() {
               </div>
             </CardContent>
             <CardFooter className="p-6 border-t">
-              <Button size="lg" className="w-full">
+              <Button size="lg" className="w-full" onClick={handlePlaceOrder}> {/* Added onClick handler */}
                 Place Order (Pay KES {cartSummary.total.toLocaleString()})
               </Button>
             </CardFooter>
@@ -147,4 +162,3 @@ export default function CheckoutPage() {
     </AppShell>
   );
 }
-
