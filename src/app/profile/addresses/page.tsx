@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { MapPin, Home, PlusCircle, Edit2, Trash2, CheckCircle, Star } from "lucide-react";
 import type React from "react";
+import { Badge } from "@/components/ui/badge"; // Added import for Badge
 
 interface Address {
   id: string;
