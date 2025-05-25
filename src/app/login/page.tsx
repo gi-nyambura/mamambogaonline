@@ -18,7 +18,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { useAuth } from "@/providers/AuthProvider";
 
 // IMPORTANT: Replace this with your actual Firebase Admin User ID
-const ADMIN_UID_PLACEHOLDER = "REPLACE_WITH_YOUR_ADMIN_UID";
+const ADMIN_UID_PLACEHOLDER = "REPLACE_WITH_YOUR_ADMIN_UID"; // Ensure this is YOUR Firebase Admin User ID
 
 type LoginRole = 'buyer' | 'seller' | 'admin';
 
@@ -30,6 +30,11 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { user: authUser, loadingAuthState } = useAuth(); 
+
+  useEffect(() => {
+    // Clear any old localStorage data from previous non-Firebase flows
+    localStorage.removeItem('newlyRegisteredUser');
+  }, []);
 
   useEffect(() => {
     if (!loadingAuthState && authUser) {
@@ -51,7 +56,7 @@ export default function LoginPage() {
     setIsLoading(true);
 
     if (loginAs === 'admin' && ADMIN_UID_PLACEHOLDER === "REPLACE_WITH_YOUR_ADMIN_UID") {
-      setError("Admin UID has not been configured. Please update the placeholder in the code with your Firebase Admin User ID. This is a security measure.");
+      setError("CRITICAL: Admin UID has not been configured in src/app/login/page.tsx. Please update the ADMIN_UID_PLACEHOLDER variable with your Firebase Admin User ID. This is a security measure.");
       setIsLoading(false);
       return;
     }
@@ -70,15 +75,19 @@ export default function LoginPage() {
       const userDocSnap = await getDoc(userDocRef);
 
       if (userDocSnap.exists()) {
-        const userData = userDocSnap.data();
+        const userData = userDocSnap.data() as { role?: string; [key: string]: any }; // Ensure role is explicitly typed
 
         if (loginAs === 'admin') {
-          if (userData.role === 'admin' && firebaseUser.uid === ADMIN_UID_PLACEHOLDER) {
+          if (firebaseUser.uid !== ADMIN_UID_PLACEHOLDER) {
+            setError(`Admin UID mismatch. Your UID: ${firebaseUser.uid}. Expected UID in code: ${ADMIN_UID_PLACEHOLDER}. Please ensure ADMIN_UID_PLACEHOLDER in src/app/login/page.tsx is correct.`);
+            await auth.signOut();
+          } else if (userData.role !== 'admin') {
+            setError(`Admin role mismatch. Your Firestore role: '${userData.role}'. Expected role: 'admin'. Please check the 'role' field in your user document in Firestore (users/${firebaseUser.uid}).`);
+            await auth.signOut();
+          } else {
+            // Both UID and role match
             console.log("Admin login successful for:", firebaseUser.email);
             router.push('/admin/dashboard'); 
-          } else {
-            setError("Access denied. Not an authorized admin account or incorrect Admin UID placeholder.");
-            await auth.signOut();
           }
         } else if (userData.role === loginAs) {
           console.log("Login successful for:", firebaseUser.email, "as", userData.role);
@@ -94,11 +103,11 @@ export default function LoginPage() {
               await auth.signOut();
           }
         } else {
-          setError(`This account is registered as a ${userData.role}. Please select the correct login type or use the appropriate account.`);
+          setError(`This account is registered as a ${userData.role || 'user with no role'}. Please select the correct login type or use the appropriate account.`);
           await auth.signOut(); 
         }
       } else {
-        setError("User data not found in database. Please contact support.");
+        setError(`User data not found in Firestore for UID: ${firebaseUser.uid}. Please ensure a user document exists in the 'users' collection.`);
         await auth.signOut();
       }
     } catch (firebaseError: any) {
@@ -108,10 +117,10 @@ export default function LoginPage() {
       } else if (firebaseError.code === 'auth/too-many-requests') {
         setError("Too many login attempts. Please try again later.");
       } else if (firebaseError.code === 'auth/invalid-api-key') {
-        setError("Firebase API Key is invalid. Please check your configuration.");
+        setError("Firebase API Key is invalid. Please check your configuration in .env and Firebase console.");
       }
       else {
-        setError("Login failed. Please try again.");
+        setError(`Login failed: ${firebaseError.message}`);
       }
     } finally {
       setIsLoading(false);
@@ -248,5 +257,3 @@ export default function LoginPage() {
     </div>
   );
 }
-
-    
