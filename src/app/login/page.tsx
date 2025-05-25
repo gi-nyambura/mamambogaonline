@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Lock, Mail, User, ShoppingBag, AlertCircle, Loader2, ShieldCheck } from "lucide-react"; // Added ShieldCheck
+import { Lock, Mail, User, ShoppingBag, AlertCircle, Loader2, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { Logo } from "@/components/common/Logo";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -34,7 +34,7 @@ export default function LoginPage() {
   useEffect(() => {
     if (!loadingAuthState && authUser) {
       if (authUser.role === 'admin') {
-        router.push('/seller/dashboard'); // Or a dedicated admin dashboard
+        router.push('/admin/dashboard'); 
       } else if (authUser.role === 'seller') {
         router.push('/seller/dashboard');
       } else if (authUser.role === 'buyer') {
@@ -51,7 +51,7 @@ export default function LoginPage() {
     setIsLoading(true);
 
     if (loginAs === 'admin' && ADMIN_UID_PLACEHOLDER === "REPLACE_WITH_YOUR_ADMIN_UID") {
-      setError("Admin UID has not been configured. Please update the placeholder in the code with your Firebase Admin User ID.");
+      setError("Admin UID has not been configured. Please update the placeholder in the code with your Firebase Admin User ID. This is a security measure.");
       setIsLoading(false);
       return;
     }
@@ -75,9 +75,9 @@ export default function LoginPage() {
         if (loginAs === 'admin') {
           if (userData.role === 'admin' && firebaseUser.uid === ADMIN_UID_PLACEHOLDER) {
             console.log("Admin login successful for:", firebaseUser.email);
-            router.push('/seller/dashboard'); // Or future /admin/dashboard
+            router.push('/admin/dashboard'); 
           } else {
-            setError("Access denied. Not an authorized admin account.");
+            setError("Access denied. Not an authorized admin account or incorrect Admin UID placeholder.");
             await auth.signOut();
           }
         } else if (userData.role === loginAs) {
@@ -98,7 +98,6 @@ export default function LoginPage() {
           await auth.signOut(); 
         }
       } else {
-        // This case might occur if a user exists in Firebase Auth but not in Firestore users collection
         setError("User data not found in database. Please contact support.");
         await auth.signOut();
       }
@@ -160,7 +159,7 @@ export default function LoginPage() {
             <RadioGroup
               value={loginAs}
               onValueChange={(value) => setLoginAs(value as LoginRole)}
-              className="grid grid-cols-3 gap-4" // Changed to grid-cols-3
+              className="grid grid-cols-3 gap-4"
               disabled={isLoading}
             >
               <div>
@@ -169,7 +168,7 @@ export default function LoginPage() {
                   htmlFor="buyer"
                   className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary [&:has([data-state=checked])]:border-primary cursor-pointer transition-all text-sm"
                 >
-                  <ShoppingBag className="mb-2 h-5 w-5" /> {/* Adjusted icon size and margin */}
+                  <ShoppingBag className="mb-2 h-5 w-5" />
                   Buyer
                 </Label>
               </div>
@@ -179,7 +178,7 @@ export default function LoginPage() {
                   htmlFor="seller"
                   className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary [&:has([data-state=checked])]:border-primary cursor-pointer transition-all text-sm"
                 >
-                  <User className="mb-2 h-5 w-5" /> {/* Adjusted icon size and margin */}
+                  <User className="mb-2 h-5 w-5" />
                   Seller
                 </Label>
               </div>
@@ -189,7 +188,7 @@ export default function LoginPage() {
                   htmlFor="admin"
                   className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary [&:has([data-state=checked])]:border-primary cursor-pointer transition-all text-sm"
                 >
-                  <ShieldCheck className="mb-2 h-5 w-5" /> {/* Adjusted icon size and margin */}
+                  <ShieldCheck className="mb-2 h-5 w-5" />
                   Admin
                 </Label>
               </div>
@@ -249,3 +248,5 @@ export default function LoginPage() {
     </div>
   );
 }
+
+    

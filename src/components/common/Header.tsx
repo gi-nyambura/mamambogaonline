@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { ShoppingCart, UserCircle, Search, Menu, LogOut, User as UserIcon, Loader2, Truck, Archive } from 'lucide-react'; // Changed PackageIcon to Archive
+import { ShoppingCart, UserCircle, Search, Menu, LogOut, User as UserIcon, Loader2, Truck, Archive, ShieldAlert } from 'lucide-react';
 import { Logo } from './Logo';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -33,16 +33,23 @@ const navLinks = [
 ];
 
 const buyerNavLinks = [
-  { href: '/my-orders', label: 'My Orders', icon: Archive }, // Using Archive as a common icon
+  { href: '/my-orders', label: 'My Orders', icon: Archive },
+  { href: '/buyer-dashboard', label: 'My Dashboard', icon: UserIcon },
 ];
 
 const sellerNavLinks = [
   { href: '/seller/dashboard', label: 'Dashboard', icon: UserIcon },
-  { href: '/seller/products', label: 'My Products', icon: Archive }, // Changed from PackageIcon to Archive
+  { href: '/seller/products', label: 'My Products', icon: Archive },
   { href: '/seller/orders', label: 'Customer Orders', icon: ShoppingCart },
   { href: '/seller/deliveries', label: 'Track Deliveries', icon: Truck },
   { href: '/seller/analytics', label: 'Analytics', icon: Loader2 }, 
   { href: '/seller/recommendations', label: 'AI Recommendations', icon: Search }, 
+];
+
+const adminNavLinks = [
+  { href: '/admin/dashboard', label: 'Admin Dashboard', icon: ShieldAlert },
+  { href: '/admin/users', label: 'Manage Users', icon: UserIcon }, // Placeholder
+  { href: '/admin/sellers', label: 'Manage Sellers', icon: Archive }, // Placeholder
 ];
 
 
@@ -80,17 +87,21 @@ export function Header() {
 
   const commonNavLinks = [...navLinks];
   let roleSpecificNavLinks: { href: string; label: string; icon: React.ElementType }[] = [];
-  let profileLink = "/profile";
-  let profileLabel = "My Profile";
+  let profileLink = "/profile"; // Default, should be overridden
+  let profileLabel = "My Profile"; // Default, should be overridden
 
   if (user) {
-    if (user.role === 'seller') {
+    if (user.role === 'admin') {
+      profileLink = "/admin/dashboard";
+      profileLabel = "Admin Dashboard";
+      roleSpecificNavLinks = adminNavLinks;
+    } else if (user.role === 'seller') {
       profileLink = "/seller/dashboard"; 
       profileLabel = "Seller Dashboard";
       roleSpecificNavLinks = sellerNavLinks;
-    } else { 
-      profileLink = "/my-orders"; // Buyer's main profile/orders page
-      profileLabel = "My Orders";
+    } else { // Buyer or unspecified
+      profileLink = "/buyer-dashboard"; 
+      profileLabel = "My Dashboard";
       roleSpecificNavLinks = buyerNavLinks; 
     }
   }
@@ -157,17 +168,19 @@ export function Header() {
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
+                {/* Main profile/dashboard link */}
                 <DropdownMenuItem asChild>
                   <Link href={profileLink}>
-                    <UserIcon className="mr-2 h-4 w-4" />
+                    {user.role === 'admin' ? <ShieldAlert className="mr-2 h-4 w-4" /> : <UserIcon className="mr-2 h-4 w-4" /> }
                     <span>{profileLabel}</span>
                   </Link>
                 </DropdownMenuItem>
                 
-                {roleSpecificNavLinks.length > 0 && (
+                {/* Role-specific additional links */}
+                {roleSpecificNavLinks.filter(link => link.href !== profileLink).length > 0 && (
                     <DropdownMenuGroup>
                          <DropdownMenuSeparator />
-                        {roleSpecificNavLinks.map(link => (
+                        {roleSpecificNavLinks.filter(link => link.href !== profileLink).map(link => (
                              <DropdownMenuItem key={link.href} asChild>
                                 <Link href={link.href}>
                                     <link.icon className="mr-2 h-4 w-4" />
@@ -227,6 +240,7 @@ export function Header() {
                       {link.label}
                     </Link>
                   ))}
+                  {/* Role-specific links for mobile */}
                   {user && roleSpecificNavLinks.map((link) => (
                      <Link
                       key={link.href}
@@ -247,7 +261,10 @@ export function Header() {
                     ) : user ? (
                       <>
                         <Button variant="outline" asChild onClick={() => { router.push(profileLink); setMobileMenuOpen(false); }}>
-                           <Link href={profileLink}>{user.firstName || profileLabel}</Link>
+                           <Link href={profileLink} className="flex items-center">
+                             {user.role === 'admin' ? <ShieldAlert className="mr-2 h-4 w-4" /> : <UserIcon className="mr-2 h-4 w-4" /> }
+                             {user.firstName || profileLabel}
+                           </Link>
                         </Button>
                         <Button variant="destructive" onClick={handleLogout}>Log Out</Button>
                       </>
@@ -270,3 +287,5 @@ export function Header() {
     </header>
   );
 }
+
+    
