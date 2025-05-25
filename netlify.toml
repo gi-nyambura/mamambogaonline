@@ -1,0 +1,13 @@
+[build]
+  command = "npm run build" # This uses the build script from your package.json
+  publish = ".next"         # The output directory for Next.js builds
+
+[functions]
+  directory = ".next/functions/" # Standard directory for Next.js API routes/serverless functions on Netlify
+
+# Optional: Settings for `netlify dev` local development
+[dev]
+  command = "npm run dev" # Uses the dev script from your package.json
+  port = 9002             # Matches your package.json dev script port
+  publish = ".next"       # Local dev server often uses this too
+  targetPort = 9002       # The port your Next.js dev server runs on
