@@ -1,10 +1,12 @@
 
+"use client"; // Added "use client" as it uses stateful logic (even if mock currently)
+
 import { AppShell } from "@/components/layout/AppShell";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { mockProducts, Product } from "@/data/products";
+import { mockProducts, type Product } from "@/data/products";
 import { CreditCard, MinusCircle, PlusCircle, ShoppingCart, Trash2, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -18,6 +20,8 @@ const cartItems = [
 const subtotal = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 const deliveryFee = 150; // Example delivery fee
 const total = subtotal + deliveryFee;
+
+export const dynamic = 'force-dynamic'; // Ensure dynamic rendering
 
 export default function CartPage() {
   return (

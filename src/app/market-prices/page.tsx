@@ -21,6 +21,8 @@ const mockMarketPrices: MarketPrice[] = [
   { crop: 'Cabbages', county: 'Meru', currentPrice: 30, previousPrice: 35, changePercentage: -14.29 }, // per head
 ];
 
+export const dynamic = 'force-dynamic'; // Ensure dynamic rendering
+
 export default function MarketPricesPage() {
   return (
     <AppShell>

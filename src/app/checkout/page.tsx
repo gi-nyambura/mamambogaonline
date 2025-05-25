@@ -26,6 +26,7 @@ const cartSummary = {
   total: mockProducts[0].price * 2 + mockProducts[1].price + 150,
 };
 
+export const dynamic = 'force-dynamic'; // Ensure dynamic rendering
 
 export default function CheckoutPage() {
   const router = useRouter(); // Initialized useRouter

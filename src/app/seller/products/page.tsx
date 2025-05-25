@@ -1,13 +1,17 @@
 
+"use client"; // Added "use client" as it might have client-side interactions in future (e.g. delete confirmation)
+
 import { AppShell } from "@/components/layout/AppShell";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { mockProducts, Product } from "@/data/products";
-import { Edit, PlusCircle, Trash2, Eye } from "lucide-react";
+import { mockProducts, type Product } from "@/data/products";
+import { Edit, PlusCircle, Trash2, Eye, ShoppingBag } from "lucide-react"; // Added ShoppingBag
 import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+
+export const dynamic = 'force-dynamic'; // Ensure dynamic rendering
 
 export default function SellerProductsPage() {
   // Filter mock products to simulate seller's products

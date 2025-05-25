@@ -1,4 +1,6 @@
 
+"use client"; // Added "use client" for potential future client-side interactions
+
 import { AppShell } from "@/components/layout/AppShell";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -33,6 +35,8 @@ const quickActions = [
     { label: "View Analytics", href: "/seller/analytics", icon: TrendingUp },
     { label: "Account Settings", href: "/seller/settings", icon: Settings }, // Placeholder for settings page
 ];
+
+export const dynamic = 'force-dynamic'; // Ensure dynamic rendering
 
 export default function SellerDashboardPage() {
   return (

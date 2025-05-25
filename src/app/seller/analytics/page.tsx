@@ -3,7 +3,7 @@
 
 import { AppShell } from "@/components/layout/AppShell";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, LineChartIcon, Package, Eye, TrendingUp, ArrowRight, Lightbulb } from "lucide-react";
+import { BarChart, LineChartIcon, Package, Eye, TrendingUp, ArrowRight, Lightbulb, TrendingDown } from "lucide-react"; // Added TrendingDown
 import {
   ChartContainer,
   ChartTooltip,
@@ -50,6 +50,8 @@ const salesChartConfig = {
 const viewsChartConfig = {
   views: { label: "Product Views", color: "hsl(var(--chart-3))" },
 } satisfies ChartConfig;
+
+export const dynamic = 'force-dynamic'; // Ensure dynamic rendering
 
 export default function SellerAnalyticsPage() {
   return (
@@ -187,4 +189,3 @@ export default function SellerAnalyticsPage() {
     </AppShell>
   );
 }
-

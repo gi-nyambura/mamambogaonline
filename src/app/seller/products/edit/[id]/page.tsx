@@ -1,7 +1,9 @@
 
+"use client"; // Required for form event handling and state
+
 import { AppShell } from "@/components/layout/AppShell";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"; // Added CardFooter
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,12 +11,17 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Edit3, Save, Trash2 } from "lucide-react";
 import Link from "next/link";
-import { mockProducts, Product } from "@/data/products"; // For prefilling
+import { mockProducts, type Product } from "@/data/products"; // For prefilling
+import type React from "react"; // Added React for FormEvent type
 
 const categories = ["Vegetables", "Fruits", "Leafy Greens", "Herbs", "Tubers", "Other"];
 const freshnessOptions = ["Fresh", "1-day old", "2-days old", "3+ days old"];
 
-// This is a server component, so params are passed directly.
+// This is a server component by default if "use client" isn't present at the top,
+// but since we have form handlers, it should be a client component.
+// The "use client" directive is added at the top.
+export const dynamic = 'force-dynamic'; // Ensure dynamic rendering
+
 export default function EditProductPage({ params }: { params: { id: string } }) {
   const productId = params.id;
   // In a real app, fetch product data by ID
@@ -139,6 +146,3 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
     </AppShell>
   );
 }
-
-// To enable dynamic rendering for this page as it uses params
-export const dynamic = 'force-dynamic';

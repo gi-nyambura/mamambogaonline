@@ -4,6 +4,8 @@ import { mockProducts } from "@/data/products";
 import { ProductCard } from "@/components/product/ProductCard";
 import { Zap } from "lucide-react";
 
+export const dynamic = 'force-dynamic'; // Ensure dynamic rendering
+
 export default function OffersPage() {
   const offerProducts = mockProducts.filter(p => p.originalPrice);
 

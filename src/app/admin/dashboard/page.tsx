@@ -39,6 +39,8 @@ const adminQuickActions = [
     { label: "System Settings", href: "/admin/settings", icon: Settings },
 ];
 
+export const dynamic = 'force-dynamic'; // Ensure dynamic rendering
+
 export default function AdminDashboardPage() {
   const { user, isAdmin, loadingAuthState } = useAuth();
   const router = useRouter();
@@ -184,5 +186,3 @@ export default function AdminDashboardPage() {
     </AppShell>
   );
 }
-
-    

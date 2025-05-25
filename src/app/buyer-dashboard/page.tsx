@@ -27,6 +27,7 @@ const quickActions = [
     { label: "Account Settings", href: "/profile/settings", icon: Settings, variant: "outline" as const }, // Placeholder
 ];
 
+export const dynamic = 'force-dynamic'; // Ensure dynamic rendering
 
 export default function BuyerDashboardPage() {
   const { user } = useAuth();
