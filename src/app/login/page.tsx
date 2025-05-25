@@ -50,8 +50,8 @@ export default function LoginPage() {
     setError(null);
     setIsLoading(true);
 
-    if (ADMIN_UID_PLACEHOLDER === "REPLACE_WITH_YOUR_ADMIN_UID" && loginAs === 'admin') {
-      setError("Admin UID has not been configured. Please contact the site administrator or update the placeholder in the code.");
+    if (loginAs === 'admin' && ADMIN_UID_PLACEHOLDER === "REPLACE_WITH_YOUR_ADMIN_UID") {
+      setError("Admin UID has not been configured. Please update the placeholder in the code with your Firebase Admin User ID.");
       setIsLoading(false);
       return;
     }
