@@ -17,8 +17,8 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { useAuth } from "@/providers/AuthProvider";
 
-// IMPORTANT: Replace this with your actual Firebase Admin User ID
-const ADMIN_UID_PLACEHOLDER = "REPLACE_WITH_YOUR_ADMIN_UID"; // Ensure this is YOUR Firebase Admin User ID
+// IMPORTANT: This is the Firebase Admin User ID
+const ADMIN_UID_PLACEHOLDER = "Kp4u2BMUUKUHZ10MZ8cNGYh9ZYw2"; 
 
 type LoginRole = 'buyer' | 'seller' | 'admin';
 
@@ -55,7 +55,7 @@ export default function LoginPage() {
     setError(null);
     setIsLoading(true);
 
-    if (loginAs === 'admin' && ADMIN_UID_PLACEHOLDER === "REPLACE_WITH_YOUR_ADMIN_UID") {
+    if (loginAs === 'admin' && ADMIN_UID_PLACEHOLDER === "REPLACE_WITH_YOUR_ADMIN_UID") { // This check is now less critical but kept as a safeguard if the above is accidentally reverted
       setError("CRITICAL: Admin UID has not been configured in src/app/login/page.tsx. Please update the ADMIN_UID_PLACEHOLDER variable with your Firebase Admin User ID. This is a security measure.");
       setIsLoading(false);
       return;
@@ -79,7 +79,7 @@ export default function LoginPage() {
 
         if (loginAs === 'admin') {
           if (firebaseUser.uid !== ADMIN_UID_PLACEHOLDER) {
-            setError(`Admin UID mismatch. Your UID: ${firebaseUser.uid}. Expected UID in code: ${ADMIN_UID_PLACEHOLDER}. Please ensure ADMIN_UID_PLACEHOLDER in src/app/login/page.tsx is correct.`);
+            setError(`Admin UID mismatch. Your UID: ${firebaseUser.uid}. Expected UID in code: ${ADMIN_UID_PLACEHOLDER}.`);
             await auth.signOut();
           } else if (userData.role !== 'admin') {
             setError(`Admin role mismatch. Your Firestore role: '${userData.role}'. Expected role: 'admin'. Please check the 'role' field in your user document in Firestore (users/${firebaseUser.uid}).`);
@@ -107,7 +107,7 @@ export default function LoginPage() {
           await auth.signOut(); 
         }
       } else {
-        setError(`User data not found in Firestore for UID: ${firebaseUser.uid}. Please ensure a user document exists in the 'users' collection.`);
+        setError(`User data not found in Firestore for UID: ${firebaseUser.uid}. Please ensure a user document exists in the 'users' collection with a 'role' field.`);
         await auth.signOut();
       }
     } catch (firebaseError: any) {
