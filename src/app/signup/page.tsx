@@ -74,6 +74,7 @@ export default function SignupPage() {
       
       setSuccessMessage("Account created successfully! Redirecting to login...");
       setIsLoading(false);
+
       setTimeout(() => {
         router.push('/login');
       }, 2000);
@@ -135,8 +136,8 @@ export default function SignupPage() {
                 </div>
               </div>
               <div className="space-y-1">
-                <Label htmlFor="lastName">Last Name</Label
-                <div className="relative">
+                <Label htmlFor="lastName">Last Name</Label>
+                <div className="relative"> {/* This div was missing */}
                   <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   <Input 
                     id="lastName" 
