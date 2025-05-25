@@ -20,6 +20,8 @@ import { useAuth } from "@/providers/AuthProvider";
 // IMPORTANT: This is the Firebase Admin User ID
 const ADMIN_UID_PLACEHOLDER = "Kp4u2BMUUKUHZ10MZ8cNGYh9ZYw2"; 
 
+export const dynamic = 'force-dynamic'; // Force dynamic rendering
+
 type LoginRole = 'buyer' | 'seller' | 'admin';
 
 export default function LoginPage() {
@@ -55,7 +57,7 @@ export default function LoginPage() {
     setError(null);
     setIsLoading(true);
 
-    if (loginAs === 'admin' && ADMIN_UID_PLACEHOLDER === "REPLACE_WITH_YOUR_ADMIN_UID") { // This check is now less critical but kept as a safeguard if the above is accidentally reverted
+    if (loginAs === 'admin' && ADMIN_UID_PLACEHOLDER === "REPLACE_WITH_YOUR_ADMIN_UID") { 
       setError("CRITICAL: Admin UID has not been configured in src/app/login/page.tsx. Please update the ADMIN_UID_PLACEHOLDER variable with your Firebase Admin User ID. This is a security measure.");
       setIsLoading(false);
       return;
@@ -75,14 +77,14 @@ export default function LoginPage() {
       const userDocSnap = await getDoc(userDocRef);
 
       if (userDocSnap.exists()) {
-        const userData = userDocSnap.data() as { role?: string; [key: string]: any }; // Ensure role is explicitly typed
+        const userData = userDocSnap.data() as { role?: string; [key: string]: any }; 
 
         if (loginAs === 'admin') {
           if (firebaseUser.uid !== ADMIN_UID_PLACEHOLDER) {
-            setError(`Admin UID mismatch. Your UID: ${firebaseUser.uid}. Expected UID in code: ${ADMIN_UID_PLACEHOLDER}.`);
+            setError(`Admin access denied. Your UID (${firebaseUser.uid}) does not match the configured Admin UID (${ADMIN_UID_PLACEHOLDER}).`);
             await auth.signOut();
           } else if (userData.role !== 'admin') {
-            setError(`Admin role mismatch. Your Firestore role: '${userData.role}'. Expected role: 'admin'. Please check the 'role' field in your user document in Firestore (users/${firebaseUser.uid}).`);
+            setError(`Admin access denied. Your account role ('${userData.role || 'undefined'}') is not 'admin'. Please check Firestore (users/${firebaseUser.uid}).`);
             await auth.signOut();
           } else {
             // Both UID and role match
@@ -116,8 +118,8 @@ export default function LoginPage() {
         setError("Invalid email or password.");
       } else if (firebaseError.code === 'auth/too-many-requests') {
         setError("Too many login attempts. Please try again later.");
-      } else if (firebaseError.code === 'auth/invalid-api-key') {
-        setError("Firebase API Key is invalid. Please check your configuration in .env and Firebase console.");
+      } else if (firebaseError.code === 'auth/invalid-api-key' || firebaseError.code === 'auth/api-key-not-valid.-please-pass-a-valid-api-key.') {
+        setError("Firebase API Key is invalid. Please check your .env file and Firebase console configuration.");
       }
       else {
         setError(`Login failed: ${firebaseError.message}`);

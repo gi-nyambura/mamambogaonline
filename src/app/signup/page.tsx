@@ -16,6 +16,8 @@ import { auth, db } from "@/lib/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 
+export const dynamic = 'force-dynamic'; // Force dynamic rendering
+
 export default function SignupPage() {
   const router = useRouter();
   const [firstName, setFirstName] = useState("");
@@ -82,7 +84,10 @@ export default function SignupPage() {
         setError("This email address is already in use. Please try another.");
       } else if (firebaseError.code === 'auth/weak-password') {
         setError("The password is too weak. Please choose a stronger password.");
-      } else {
+      } else if (firebaseError.code === 'auth/invalid-api-key' || firebaseError.code === 'auth/api-key-not-valid.-please-pass-a-valid-api-key.') {
+        setError("Firebase API Key is invalid. Please check your deployment configuration.");
+      }
+      else {
         setError("Failed to create account. Please try again.");
       }
       setIsLoading(false);
@@ -116,80 +121,98 @@ export default function SignupPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1">
                 <Label htmlFor="firstName">First Name</Label>
-                <Input 
-                  id="firstName" 
-                  placeholder="Jane" 
-                  icon={<User className="h-4 w-4 text-muted-foreground" />} 
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  required
-                  disabled={isLoading}
-                />
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input 
+                    id="firstName" 
+                    placeholder="Jane" 
+                    className="pl-10"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    required
+                    disabled={isLoading}
+                  />
+                </div>
               </div>
               <div className="space-y-1">
-                <Label htmlFor="lastName">Last Name</Label>
-                <Input 
-                  id="lastName" 
-                  placeholder="Doe" 
-                  icon={<User className="h-4 w-4 text-muted-foreground" />} 
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  required
-                  disabled={isLoading}
-                />
+                <Label htmlFor="lastName">Last Name</Label
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input 
+                    id="lastName" 
+                    placeholder="Doe" 
+                    className="pl-10"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    required
+                    disabled={isLoading}
+                  />
+                </div>
               </div>
             </div>
             <div className="space-y-1">
               <Label htmlFor="email">Email Address</Label>
-              <Input 
-                id="email" 
-                type="email" 
-                placeholder="you@example.com" 
-                icon={<Mail className="h-4 w-4 text-muted-foreground" />} 
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                disabled={isLoading}
-              />
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input 
+                  id="email" 
+                  type="email" 
+                  placeholder="you@example.com" 
+                  className="pl-10"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  disabled={isLoading}
+                />
+              </div>
             </div>
             <div className="space-y-1">
               <Label htmlFor="phone">Phone Number</Label>
-              <Input 
-                id="phone" 
-                type="tel" 
-                placeholder="0712 345 678" 
-                icon={<Phone className="h-4 w-4 text-muted-foreground" />} 
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                required
-                disabled={isLoading}
-              />
+              <div className="relative">
+                <Phone className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input 
+                  id="phone" 
+                  type="tel" 
+                  placeholder="0712 345 678" 
+                  className="pl-10"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  required
+                  disabled={isLoading}
+                />
+              </div>
             </div>
             <div className="space-y-1">
               <Label htmlFor="password">Password</Label>
-              <Input 
-                id="password" 
-                type="password" 
-                placeholder="Create a strong password" 
-                icon={<Lock className="h-4 w-4 text-muted-foreground" />} 
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                disabled={isLoading}
-              />
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input 
+                  id="password" 
+                  type="password" 
+                  placeholder="Create a strong password" 
+                  className="pl-10"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  disabled={isLoading}
+                />
+              </div>
             </div>
             <div className="space-y-1">
               <Label htmlFor="confirmPassword">Confirm Password</Label>
-              <Input 
-                id="confirmPassword" 
-                type="password" 
-                placeholder="Confirm your password" 
-                icon={<Lock className="h-4 w-4 text-muted-foreground" />} 
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                disabled={isLoading}
-              />
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input 
+                  id="confirmPassword" 
+                  type="password" 
+                  placeholder="Confirm your password" 
+                  className="pl-10"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  disabled={isLoading}
+                />
+              </div>
             </div>
             <div className="flex items-center space-x-2 pt-1">
               <Checkbox 
