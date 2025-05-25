@@ -11,14 +11,14 @@ interface UserProfile extends FirebaseUser {
   // Add any custom user profile fields you store in Firestore
   firstName?: string;
   lastName?: string;
-  role?: 'buyer' | 'seller';
+  role?: 'buyer' | 'seller' | 'admin'; // Added 'admin' role
   phone?: string;
 }
 
 interface AuthContextType {
   user: UserProfile | null;
   loadingAuthState: boolean;
-  isAdmin: boolean; // Example, can be expanded
+  isAdmin: boolean; 
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -26,7 +26,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loadingAuthState, setLoadingAuthState] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false); // Example admin state
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
@@ -36,18 +36,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const userDocSnap = await getDoc(userDocRef);
         if (userDocSnap.exists()) {
           const userData = userDocSnap.data() as DocumentData;
-          setUser({
+          const userProfile: UserProfile = {
             ...firebaseUser,
             firstName: userData.firstName,
             lastName: userData.lastName,
             role: userData.role,
             phone: userData.phone,
-          });
-          // Example: Check if user is admin based on role or a specific field
-          // setIsAdmin(userData.role === 'admin');
+          };
+          setUser(userProfile);
+          setIsAdmin(userData.role === 'admin'); // Set isAdmin based on role from Firestore
         } else {
-          // Should not happen if user data is created on signup
+          // Should not happen if user data is created on signup,
+          // or if an admin user is manually created in Auth but not Firestore users collection
           setUser(firebaseUser as UserProfile); 
+          setIsAdmin(false); // Default to false if no Firestore data
         }
       } else {
         // User is signed out

@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Lock, Mail, User, ShoppingBag, AlertCircle, Loader2 } from "lucide-react";
+import { Lock, Mail, User, ShoppingBag, AlertCircle, Loader2, ShieldCheck } from "lucide-react"; // Added ShieldCheck
 import Link from "next/link";
 import { Logo } from "@/components/common/Logo";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -17,8 +17,13 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { useAuth } from "@/providers/AuthProvider";
 
+// IMPORTANT: Replace this with your actual Firebase Admin User ID
+const ADMIN_UID_PLACEHOLDER = "REPLACE_WITH_YOUR_ADMIN_UID";
+
+type LoginRole = 'buyer' | 'seller' | 'admin';
+
 export default function LoginPage() {
-  const [loginAs, setLoginAs] = useState<'buyer' | 'seller'>("buyer");
+  const [loginAs, setLoginAs] = useState<LoginRole>("buyer");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -28,7 +33,9 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (!loadingAuthState && authUser) {
-      if (authUser.role === 'seller') {
+      if (authUser.role === 'admin') {
+        router.push('/seller/dashboard'); // Or a dedicated admin dashboard
+      } else if (authUser.role === 'seller') {
         router.push('/seller/dashboard');
       } else if (authUser.role === 'buyer') {
         router.push('/buyer-dashboard');
@@ -42,6 +49,12 @@ export default function LoginPage() {
   const handleLogin = async () => {
     setError(null);
     setIsLoading(true);
+
+    if (ADMIN_UID_PLACEHOLDER === "REPLACE_WITH_YOUR_ADMIN_UID" && loginAs === 'admin') {
+      setError("Admin UID has not been configured. Please contact the site administrator or update the placeholder in the code.");
+      setIsLoading(false);
+      return;
+    }
 
     if (!email || !password) {
       setError("Please enter both email and password.");
@@ -58,7 +71,16 @@ export default function LoginPage() {
 
       if (userDocSnap.exists()) {
         const userData = userDocSnap.data();
-        if (userData.role === loginAs) {
+
+        if (loginAs === 'admin') {
+          if (userData.role === 'admin' && firebaseUser.uid === ADMIN_UID_PLACEHOLDER) {
+            console.log("Admin login successful for:", firebaseUser.email);
+            router.push('/seller/dashboard'); // Or future /admin/dashboard
+          } else {
+            setError("Access denied. Not an authorized admin account.");
+            await auth.signOut();
+          }
+        } else if (userData.role === loginAs) {
           console.log("Login successful for:", firebaseUser.email, "as", userData.role);
           switch (userData.role) {
             case 'buyer':
@@ -71,13 +93,13 @@ export default function LoginPage() {
               setError("Unknown role. Please contact support.");
               await auth.signOut();
           }
-           
         } else {
           setError(`This account is registered as a ${userData.role}. Please select the correct login type or use the appropriate account.`);
           await auth.signOut(); 
         }
       } else {
-        setError("User data not found. Please contact support.");
+        // This case might occur if a user exists in Firebase Auth but not in Firestore users collection
+        setError("User data not found in database. Please contact support.");
         await auth.signOut();
       }
     } catch (firebaseError: any) {
@@ -86,6 +108,8 @@ export default function LoginPage() {
         setError("Invalid email or password.");
       } else if (firebaseError.code === 'auth/too-many-requests') {
         setError("Too many login attempts. Please try again later.");
+      } else if (firebaseError.code === 'auth/invalid-api-key') {
+        setError("Firebase API Key is invalid. Please check your configuration.");
       }
       else {
         setError("Login failed. Please try again.");
@@ -103,6 +127,15 @@ export default function LoginPage() {
       </div>
     );
   }
+
+  const getLoginButtonText = () => {
+    switch(loginAs) {
+      case 'buyer': return 'Sign In as Buyer';
+      case 'seller': return 'Sign In as Seller';
+      case 'admin': return 'Sign In as Admin';
+      default: return 'Sign In';
+    }
+  };
 
 
   return (
@@ -126,17 +159,17 @@ export default function LoginPage() {
             <Label className="text-base font-medium">Login as:</Label>
             <RadioGroup
               value={loginAs}
-              onValueChange={(value) => setLoginAs(value as 'buyer' | 'seller')}
-              className="grid grid-cols-2 gap-4"
+              onValueChange={(value) => setLoginAs(value as LoginRole)}
+              className="grid grid-cols-3 gap-4" // Changed to grid-cols-3
               disabled={isLoading}
             >
               <div>
                 <RadioGroupItem value="buyer" id="buyer" className="peer sr-only" />
                 <Label
                   htmlFor="buyer"
-                  className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary [&:has([data-state=checked])]:border-primary cursor-pointer transition-all"
+                  className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary [&:has([data-state=checked])]:border-primary cursor-pointer transition-all text-sm"
                 >
-                  <ShoppingBag className="mb-3 h-6 w-6" />
+                  <ShoppingBag className="mb-2 h-5 w-5" /> {/* Adjusted icon size and margin */}
                   Buyer
                 </Label>
               </div>
@@ -144,10 +177,20 @@ export default function LoginPage() {
                 <RadioGroupItem value="seller" id="seller" className="peer sr-only" />
                 <Label
                   htmlFor="seller"
-                  className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary [&:has([data-state=checked])]:border-primary cursor-pointer transition-all"
+                  className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary [&:has([data-state=checked])]:border-primary cursor-pointer transition-all text-sm"
                 >
-                  <User className="mb-3 h-6 w-6" />
+                  <User className="mb-2 h-5 w-5" /> {/* Adjusted icon size and margin */}
                   Seller
+                </Label>
+              </div>
+              <div>
+                <RadioGroupItem value="admin" id="admin" className="peer sr-only" />
+                <Label
+                  htmlFor="admin"
+                  className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary [&:has([data-state=checked])]:border-primary cursor-pointer transition-all text-sm"
+                >
+                  <ShieldCheck className="mb-2 h-5 w-5" /> {/* Adjusted icon size and margin */}
+                  Admin
                 </Label>
               </div>
             </RadioGroup>
@@ -193,7 +236,7 @@ export default function LoginPage() {
         </CardContent>
         <CardFooter className="flex flex-col gap-4">
           <Button className="w-full" size="lg" onClick={handleLogin} disabled={isLoading}>
-            {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : `Sign In as ${loginAs === 'buyer' ? 'Buyer' : 'Seller'}`}
+            {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : getLoginButtonText()}
           </Button>
           <p className="text-sm text-center text-muted-foreground">
             Don&apos;t have an account?{' '}
