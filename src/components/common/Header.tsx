@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { ShoppingCart, UserCircle, Search, Menu, LogOut, User as UserIcon, Loader2, Truck, Archive, ShieldAlert } from 'lucide-react';
+import { ShoppingCart, Search, Menu, LogOut, User as UserIcon, Loader2, Truck, Archive, ShieldAlert, Settings as SettingsIcon } from 'lucide-react';
 import { Logo } from './Logo';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -48,8 +48,8 @@ const sellerNavLinks = [
 
 const adminNavLinks = [
   { href: '/admin/dashboard', label: 'Admin Dashboard', icon: ShieldAlert },
-  { href: '/admin/users', label: 'Manage Users', icon: UserIcon }, // Placeholder
-  { href: '/admin/sellers', label: 'Manage Sellers', icon: Archive }, // Placeholder
+  { href: '/admin/users', label: 'Manage Users', icon: UserIcon },
+  { href: '/admin/sellers', label: 'Manage Sellers', icon: Archive },
 ];
 
 
@@ -72,23 +72,18 @@ export function Header() {
     }
   };
   
-  const getInitials = (firstName?: string, lastName?: string) => {
-    if (firstName && lastName) {
-      return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
-    }
-    if (firstName) {
-      return firstName.charAt(0).toUpperCase();
-    }
-    if (user?.email) {
-      return user.email.charAt(0).toUpperCase();
-    }
+  const getInitials = () => {
+    if (user?.firstName && user?.lastName) return `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase();
+    if (user?.firstName) return user.firstName.charAt(0).toUpperCase();
+    if (user?.displayName) return user.displayName.charAt(0).toUpperCase();
+    if (user?.email) return user.email.charAt(0).toUpperCase();
     return "U";
-  }
+  };
 
   const commonNavLinks = [...navLinks];
   let roleSpecificNavLinks: { href: string; label: string; icon: React.ElementType }[] = [];
-  let profileLink = "/profile"; // Default, should be overridden
-  let profileLabel = "My Profile"; // Default, should be overridden
+  let profileLink = "/profile"; // Default, will be overridden
+  let profileLabel = "My Profile"; // Default, will be overridden
 
   if (user) {
     if (user.role === 'admin') {
@@ -150,9 +145,9 @@ export function Header() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-9 w-9 rounded-full">
-                  <Avatar className="h-9 w-9">
+                  <Avatar className="h-9 w-9 border">
                     <AvatarImage src={user.photoURL || undefined} alt={user.displayName || user.email || "User"} />
-                    <AvatarFallback>{getInitials(user.firstName, user.lastName)}</AvatarFallback>
+                    <AvatarFallback>{getInitials()}</AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
@@ -163,36 +158,38 @@ export function Header() {
                       {user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : user.displayName || "User"}
                     </p>
                     <p className="text-xs leading-none text-muted-foreground">
-                      {user.email} ({user.role})
+                      {user.email} {user.role ? `(${user.role})` : ''}
                     </p>
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                {/* Main profile/dashboard link */}
                 <DropdownMenuItem asChild>
-                  <Link href={profileLink}>
+                  <Link href={profileLink} className="flex items-center">
                     {user.role === 'admin' ? <ShieldAlert className="mr-2 h-4 w-4" /> : <UserIcon className="mr-2 h-4 w-4" /> }
                     <span>{profileLabel}</span>
                   </Link>
                 </DropdownMenuItem>
                 
-                {/* Role-specific additional links */}
                 {roleSpecificNavLinks.filter(link => link.href !== profileLink).length > 0 && (
-                    <DropdownMenuGroup>
-                         <DropdownMenuSeparator />
-                        {roleSpecificNavLinks.filter(link => link.href !== profileLink).map(link => (
-                             <DropdownMenuItem key={link.href} asChild>
-                                <Link href={link.href}>
-                                    <link.icon className="mr-2 h-4 w-4" />
-                                    <span>{link.label}</span>
-                                </Link>
-                            </DropdownMenuItem>
-                        ))}
-                    </DropdownMenuGroup>
+                  <>
+                    {roleSpecificNavLinks.filter(link => link.href !== profileLink).map(link => (
+                         <DropdownMenuItem key={link.href} asChild>
+                            <Link href={link.href} className="flex items-center">
+                                <link.icon className="mr-2 h-4 w-4" />
+                                <span>{link.label}</span>
+                            </Link>
+                        </DropdownMenuItem>
+                    ))}
+                  </>
                 )}
-
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout}>
+                 <DropdownMenuItem asChild>
+                   <Link href="/profile/settings" className="flex items-center"> {/* Placeholder settings link */}
+                     <SettingsIcon className="mr-2 h-4 w-4" />
+                     <span>Settings</span>
+                   </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogout} className="flex items-center">
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Log out</span>
                 </DropdownMenuItem>
@@ -240,7 +237,7 @@ export function Header() {
                       {link.label}
                     </Link>
                   ))}
-                  {/* Role-specific links for mobile */}
+                  
                   {user && roleSpecificNavLinks.map((link) => (
                      <Link
                       key={link.href}
@@ -254,18 +251,25 @@ export function Header() {
                       <link.icon className="mr-2 h-5 w-5" /> {link.label}
                     </Link>
                   ))}
+                   {user && (
+                     <Link
+                        href="/profile/settings" // Placeholder settings link
+                        className={cn(
+                            "text-lg font-medium transition-colors hover:text-primary flex items-center",
+                            pathname === "/profile/settings" ? "text-primary" : "text-foreground/80"
+                        )}
+                        onClick={() => setMobileMenuOpen(false)}
+                        >
+                        <SettingsIcon className="mr-2 h-5 w-5" /> Settings
+                    </Link>
+                   )}
                 </nav>
                 <div className="flex flex-col space-y-2 pt-4 border-t">
                     {loadingAuthState ? (
                        <Button variant="outline" disabled><Loader2 className="mr-2 h-4 w-4 animate-spin"/>Loading...</Button>
                     ) : user ? (
                       <>
-                        <Button variant="outline" asChild onClick={() => { router.push(profileLink); setMobileMenuOpen(false); }}>
-                           <Link href={profileLink} className="flex items-center">
-                             {user.role === 'admin' ? <ShieldAlert className="mr-2 h-4 w-4" /> : <UserIcon className="mr-2 h-4 w-4" /> }
-                             {user.firstName || profileLabel}
-                           </Link>
-                        </Button>
+                        {/* The dashboard/profile link is already covered by roleSpecificNavLinks for mobile */}
                         <Button variant="destructive" onClick={handleLogout}>Log Out</Button>
                       </>
                     ) : (
@@ -287,5 +291,5 @@ export function Header() {
     </header>
   );
 }
-
+    
     
