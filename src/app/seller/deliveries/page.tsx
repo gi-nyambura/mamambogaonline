@@ -3,7 +3,7 @@
 
 import { AppShell } from "@/components/layout/AppShell";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -24,6 +24,7 @@ interface SellerDelivery {
   items: { name: string; quantity: number }[];
   deliveryNotes?: string;
   confirmationImage?: string; // URL to a photo if delivery is confirmed with one
+  dataAiHint?: string;
 }
 
 const mockDeliveries: SellerDelivery[] = [
@@ -57,7 +58,7 @@ const mockDeliveries: SellerDelivery[] = [
     estimatedDelivery: "Oct 25, 11:00 AM",
     riderName: "David M.",
     items: [{ name: "Carrots (1kg)", quantity: 1 }, { name: "Onions (1kg)", quantity: 1 }],
-    confirmationImage: "https://placehold.co/300x200.png?text=Proof+of+Delivery",
+    confirmationImage: "https://placehold.co/300x200.png",
     dataAiHint: "delivery proof"
   },
   {
@@ -308,3 +309,5 @@ export default function SellerDeliveriesPage() {
 
 // To enable dynamic rendering for this page as it relies on client side state
 export const dynamic = 'force-dynamic';
+
+    
