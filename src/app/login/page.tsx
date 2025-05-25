@@ -24,12 +24,17 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { user: authUser, loadingAuthState } = useAuth(); // Get auth state
+  const { user: authUser, loadingAuthState } = useAuth(); 
 
-  // Redirect if already logged in
   useEffect(() => {
     if (!loadingAuthState && authUser) {
-      router.push('/');
+      if (authUser.role === 'seller') {
+        router.push('/seller/dashboard');
+      } else if (authUser.role === 'buyer') {
+        router.push('/buyer-dashboard');
+      } else {
+         router.push('/'); 
+      }
     }
   }, [authUser, loadingAuthState, router]);
 
@@ -48,7 +53,6 @@ export default function LoginPage() {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const firebaseUser = userCredential.user;
 
-      // Fetch user role from Firestore
       const userDocRef = doc(db, "users", firebaseUser.uid);
       const userDocSnap = await getDoc(userDocRef);
 
@@ -56,13 +60,23 @@ export default function LoginPage() {
         const userData = userDocSnap.data();
         if (userData.role === loginAs) {
           console.log("Login successful for:", firebaseUser.email, "as", userData.role);
-          router.push('/'); 
+          switch (userData.role) {
+            case 'buyer':
+              router.push('/buyer-dashboard');
+              break;
+            case 'seller':
+              router.push('/seller/dashboard');
+              break;
+            default:
+              setError("Unknown role. Please contact support.");
+              await auth.signOut();
+          }
+           
         } else {
-          setError(`This account is registered as a ${userData.role}. Please select the correct login type or contact support if this is an error.`);
-          await auth.signOut(); // Sign out if role mismatch
+          setError(`This account is registered as a ${userData.role}. Please select the correct login type or use the appropriate account.`);
+          await auth.signOut(); 
         }
       } else {
-        // This case should ideally not happen if user data is created on signup
         setError("User data not found. Please contact support.");
         await auth.signOut();
       }
@@ -81,10 +95,11 @@ export default function LoginPage() {
     }
   };
 
-  if (loadingAuthState) {
+  if (loadingAuthState || (!loadingAuthState && authUser)) { 
      return (
-      <div className="flex min-h-screen flex-col items-center justify-center">
+      <div className="flex min-h-screen flex-col items-center justify-center bg-background">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
+        <p className="mt-4 text-muted-foreground">Loading your experience...</p>
       </div>
     );
   }
@@ -119,7 +134,7 @@ export default function LoginPage() {
                 <RadioGroupItem value="buyer" id="buyer" className="peer sr-only" />
                 <Label
                   htmlFor="buyer"
-                  className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary [&:has([data-state=checked])]:border-primary cursor-pointer"
+                  className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary [&:has([data-state=checked])]:border-primary cursor-pointer transition-all"
                 >
                   <ShoppingBag className="mb-3 h-6 w-6" />
                   Buyer
@@ -129,7 +144,7 @@ export default function LoginPage() {
                 <RadioGroupItem value="seller" id="seller" className="peer sr-only" />
                 <Label
                   htmlFor="seller"
-                  className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary [&:has([data-state=checked])]:border-primary cursor-pointer"
+                  className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary [&:has([data-state=checked])]:border-primary cursor-pointer transition-all"
                 >
                   <User className="mb-3 h-6 w-6" />
                   Seller
@@ -140,16 +155,19 @@ export default function LoginPage() {
 
           <div className="space-y-2">
             <Label htmlFor="email">Email Address</Label>
-            <Input 
-              id="email" 
-              type="email" 
-              placeholder="you@example.com" 
-              icon={<Mail className="h-4 w-4 text-muted-foreground" />} 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              disabled={isLoading}
-            />
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input 
+                id="email" 
+                type="email" 
+                placeholder="you@example.com" 
+                className="pl-10"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                disabled={isLoading}
+              />
+            </div>
           </div>
           <div className="space-y-2">
             <div className="flex items-center justify-between">
@@ -158,16 +176,19 @@ export default function LoginPage() {
                     Forgot password?
                 </Link>
             </div>
-            <Input 
-              id="password" 
-              type="password" 
-              placeholder="••••••••" 
-              icon={<Lock className="h-4 w-4 text-muted-foreground" />} 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              disabled={isLoading}
-            />
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input 
+                id="password" 
+                type="password" 
+                placeholder="••••••••" 
+                className="pl-10"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                disabled={isLoading}
+              />
+            </div>
           </div>
         </CardContent>
         <CardFooter className="flex flex-col gap-4">
