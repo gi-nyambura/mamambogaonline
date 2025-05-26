@@ -9,7 +9,7 @@ export interface Product {
   seller: string;
   location: string; // e.g., "Nairobi", "Kiambu"
   distance?: string; // e.g., "2km away"
-  freshness: 'Fresh' | '1-day old' | '2-days old' | '3+ days old'; // Added '3+ days old'
+  freshness: 'Fresh' | '1-day old' | '2-days old' | '3+ days old';
   isOrganic: boolean;
   stock: number;
   description: string;
@@ -19,7 +19,7 @@ export interface Product {
   fertilizerUsed?: string;
   fertilizerLastUsedDate?: string; // Consider ISO string or Date object
   fertilizerApplicationMethod?: string;
-  fertilizerBatchNumber?: string; // New field
+  fertilizerBatchNumber?: string;
 }
 
 export const mockProducts: Product[] = [
@@ -162,10 +162,13 @@ export const mockProducts: Product[] = [
     location: 'Ruiru, Kiambu',
     distance: '12km away',
     freshness: 'Fresh',
-    isOrganic: false, // Assuming not specified for these animal products for now
+    isOrganic: false, 
     stock: 70,
     description: 'Farm fresh eggs, collected daily. Rich in protein.',
-    // No fertilizer info for animal products
+    fertilizerUsed: 'N/A',
+    fertilizerLastUsedDate: 'N/A',
+    fertilizerApplicationMethod: 'N/A',
+    fertilizerBatchNumber: 'N/A',
     rating: 4.7,
     reviews: 90,
   },
@@ -181,7 +184,7 @@ export const mockProducts: Product[] = [
     distance: '45km away',
     freshness: 'Fresh',
     isOrganic: true,
-    fertilizerUsed: 'Grazed on organic pasture', // More of a feed note
+    fertilizerUsed: 'Grazed on organic pasture',
     fertilizerLastUsedDate: 'N/A',
     fertilizerApplicationMethod: 'N/A',
     fertilizerBatchNumber: 'N/A',
@@ -191,3 +194,5 @@ export const mockProducts: Product[] = [
     reviews: 180,
   }
 ];
+
+    
