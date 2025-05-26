@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { DollarSign, Eye, ShoppingBag, ListOrdered, Star, PlusCircle, Settings, TrendingUp, Truck, Archive as PackageIcon, Lightbulb, BarChart3, ArrowRight } from "lucide-react";
+import { DollarSign, Eye, ShoppingBag, ListOrdered, PlusCircle, Settings, Truck, Archive as PackageIcon, Lightbulb, BarChart3, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -14,7 +14,6 @@ const metrics = [
   { title: "Total Sales (Month)", value: "KES 12,500", icon: DollarSign, trend: "+5.2%", color: "text-green-500" },
   { title: "Total Orders (Month)", value: "150", icon: ShoppingBag, trend: "+10", color: "text-blue-500" },
   { title: "Product Views (Week)", value: "2,800", icon: Eye, trend: "+25%", color: "text-indigo-500" },
-  // New Card for Analytics Link
   { title: "View Full Analytics", value: "Go to Analytics", icon: BarChart3, href: "/seller/analytics", isLink: true, color: "text-primary" },
 ];
 
@@ -69,7 +68,7 @@ export default function SellerDashboardPage() {
                 </Card>
               </Link>
             ) : (
-            <Card key={metric.title} className="shadow-lg hover:shadow-xl transition-shadow">
+            <Card key={metric.title} className="shadow-lg hover:shadow-xl transition-shadow h-full">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">
                   {metric.title}
@@ -137,7 +136,7 @@ export default function SellerDashboardPage() {
 
           <Card className="lg:col-span-1 shadow-lg">
              <CardHeader>
-                <CardTitle className="font-poppins flex items-center"><TrendingUp className="mr-2 h-5 w-5 text-primary"/>Quick Actions</CardTitle>
+                <CardTitle className="font-poppins flex items-center"><Settings className="mr-2 h-5 w-5 text-primary"/>Quick Actions</CardTitle>
              </CardHeader>
              <CardContent className="grid grid-cols-2 gap-4 sm:grid-cols-1">
                 {quickActions.map(action => (
@@ -194,3 +193,5 @@ export default function SellerDashboardPage() {
     </AppShell>
   );
 }
+
+    

@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { ShoppingCart, UserCircle as UserIcon, Search, Menu, LogOut, Loader2, Truck, Archive as PackageIcon, ShieldAlert, Settings as SettingsIcon, BarChart3 as AnalyticsIcon, Lightbulb } from 'lucide-react';
+import { ShoppingCart, UserCircle, Search, Menu, LogOut, Loader2, Truck, Archive as PackageIcon, ShieldAlert, Settings as SettingsIcon, BarChart3 as AnalyticsIcon, Lightbulb } from 'lucide-react';
 import { Logo } from './Logo';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -33,22 +33,22 @@ const navLinks = [
 
 const buyerNavLinks = [
   { href: '/my-orders', label: 'My Orders', icon: PackageIcon },
-  { href: '/buyer-dashboard', label: 'My Dashboard', icon: UserIcon },
+  { href: '/buyer-dashboard', label: 'My Dashboard', icon: UserCircle },
 ];
 
 const sellerNavLinks = [
-  { href: '/seller/dashboard', label: 'Dashboard', icon: UserIcon },
+  { href: '/seller/dashboard', label: 'Dashboard', icon: UserCircle },
   { href: '/seller/products', label: 'My Products', icon: PackageIcon },
   { href: '/seller/orders', label: 'Customer Orders', icon: ShoppingCart },
   { href: '/seller/deliveries', label: 'Track Deliveries', icon: Truck },
-  { href: '/seller/analytics', label: 'Analytics', icon: AnalyticsIcon },
+  { href: '/seller/analytics', label: 'Analytics', icon: AnalyticsIcon }, 
   { href: '/seller/recommendations', label: 'Market Insights', icon: Lightbulb }, 
 ];
 
 const adminNavLinks = [
   { href: '/admin/dashboard', label: 'Admin Dashboard', icon: ShieldAlert },
-  { href: '/admin/users', label: 'Manage Users', icon: UserIcon }, // Placeholder link
-  { href: '/admin/sellers', label: 'Manage Sellers', icon: PackageIcon }, // Placeholder link
+  { href: '/admin/users', label: 'Manage Users', icon: UserCircle }, 
+  { href: '/admin/sellers', label: 'Manage Sellers', icon: PackageIcon }, 
 ];
 
 
@@ -164,14 +164,12 @@ export function Header() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link href={profileLink} className="flex items-center">
-                    {user.role === 'admin' ? <ShieldAlert className="mr-2 h-4 w-4" /> : <UserIcon className="mr-2 h-4 w-4" /> }
+                    {user.role === 'admin' ? <ShieldAlert className="mr-2 h-4 w-4" /> : <UserCircle className="mr-2 h-4 w-4" /> }
                     <span>{profileLabel}</span>
                   </Link>
                 </DropdownMenuItem>
                 
-                {roleSpecificNavLinks.filter(link => link.href !== profileLink).length > 0 && (
-                  <>
-                    {roleSpecificNavLinks.filter(link => link.href !== profileLink).map(link => (
+                {roleSpecificNavLinks.filter(link => link.href !== profileLink).map(link => (
                          <DropdownMenuItem key={link.href} asChild>
                             <Link href={link.href} className="flex items-center">
                                 <link.icon className="mr-2 h-4 w-4" />
@@ -289,3 +287,5 @@ export function Header() {
     </header>
   );
 }
+
+    
