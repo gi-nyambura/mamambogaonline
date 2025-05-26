@@ -13,7 +13,7 @@ import { PackagePlus, Save } from "lucide-react";
 import Link from "next/link";
 import type React from "react"; // Added React for FormEvent type
 
-const categories = ["Vegetables", "Fruits", "Leafy Greens", "Herbs", "Tubers", "Other"];
+const categories = ["Vegetables", "Fruits", "Leafy Greens", "Herbs", "Tubers", "Dairy & Eggs", "Meat & Poultry", "Other"];
 const freshnessOptions = ["Fresh", "1-day old", "2-days old", "3+ days old"];
 
 export const dynamic = 'force-dynamic'; // Ensure dynamic rendering
@@ -121,3 +121,5 @@ export default function NewProductPage() {
     </AppShell>
   );
 }
+
+    

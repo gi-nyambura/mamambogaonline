@@ -11,15 +11,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Edit3, Save, Trash2 } from "lucide-react";
 import Link from "next/link";
-import { mockProducts, type Product } from "@/data/products"; // For prefilling
+import { mockProducts } from "@/data/products"; // For prefilling
+import type { Product } from "@/data/products";
 import type React from "react"; // Added React for FormEvent type
 
-const categories = ["Vegetables", "Fruits", "Leafy Greens", "Herbs", "Tubers", "Other"];
+const categories = ["Vegetables", "Fruits", "Leafy Greens", "Herbs", "Tubers", "Dairy & Eggs", "Meat & Poultry", "Other"];
 const freshnessOptions = ["Fresh", "1-day old", "2-days old", "3+ days old"];
 
-// This is a server component by default if "use client" isn't present at the top,
-// but since we have form handlers, it should be a client component.
-// The "use client" directive is added at the top.
 export const dynamic = 'force-dynamic'; // Ensure dynamic rendering
 
 export default function EditProductPage({ params }: { params: { id: string } }) {
@@ -146,3 +144,5 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
     </AppShell>
   );
 }
+
+    
