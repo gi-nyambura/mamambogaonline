@@ -5,11 +5,11 @@ export interface Product {
   price: number;
   originalPrice?: number;
   category: string;
-  imageUrl: string; 
-  dataAiHint: string; 
+  imageUrl: string;
+  dataAiHint: string;
   seller: string;
-  location: string; 
-  distance?: string; 
+  location: string;
+  distance?: string;
   freshness: 'Fresh' | '1-day old' | '2-days old' | '3+ days old';
   isOrganic: boolean;
   stock: number;
@@ -17,7 +17,7 @@ export interface Product {
   rating?: number;
   reviews?: number;
   fertilizerUsed?: string;
-  fertilizerLastUsedDate?: string; 
+  fertilizerLastUsedDate?: string;
   fertilizerApplicationMethod?: string;
   fertilizerBatchNumber?: string;
 }
@@ -165,7 +165,7 @@ export const mockProducts: Product[] = [
     isOrganic: false,
     stock: 70,
     description: 'Farm fresh eggs, collected daily. Rich in protein.',
-    fertilizerUsed: 'N/A', 
+    fertilizerUsed: 'N/A',
     fertilizerLastUsedDate: 'N/A',
     fertilizerApplicationMethod: 'N/A',
     fertilizerBatchNumber: 'N/A',
@@ -184,7 +184,7 @@ export const mockProducts: Product[] = [
     distance: '45km away',
     freshness: 'Fresh',
     isOrganic: true,
-    fertilizerUsed: 'Grazed on organic pasture', 
+    fertilizerUsed: 'Grazed on organic pasture',
     fertilizerLastUsedDate: 'N/A',
     fertilizerApplicationMethod: 'N/A',
     fertilizerBatchNumber: 'N/A',
@@ -194,5 +194,3 @@ export const mockProducts: Product[] = [
     reviews: 180,
   }
 ];
-
-    
