@@ -15,7 +15,7 @@ export interface Product {
   description: string;
   rating?: number;
   reviews?: number;
-  dataAiHint: string;
+  dataAiHint: string; // Keywords for Unsplash, e.g., "fresh tomatoes"
   fertilizerUsed?: string;
   fertilizerLastUsedDate?: string; // Consider ISO string or Date object
   fertilizerApplicationMethod?: string;
@@ -28,7 +28,7 @@ export const mockProducts: Product[] = [
     name: 'Fresh Tomatoes (1kg)',
     price: 120,
     category: 'Vegetables',
-    imageUrl: 'https://placehold.co/600x400.png',
+    imageUrl: 'https://source.unsplash.com/600x400/?fresh-tomatoes',
     dataAiHint: 'fresh tomatoes',
     seller: 'Mama Agnes',
     location: 'Westlands, Nairobi',
@@ -50,7 +50,7 @@ export const mockProducts: Product[] = [
     price: 80,
     originalPrice: 100,
     category: 'Leafy Greens',
-    imageUrl: 'https://placehold.co/600x400.png',
+    imageUrl: 'https://source.unsplash.com/600x400/?spinach-leaves',
     dataAiHint: 'spinach leaves',
     seller: 'John K.',
     location: 'Kasarani, Nairobi',
@@ -71,7 +71,7 @@ export const mockProducts: Product[] = [
     name: 'Sweet Mangoes (Pack of 3)',
     price: 250,
     category: 'Fruits',
-    imageUrl: 'https://placehold.co/600x400.png',
+    imageUrl: 'https://source.unsplash.com/600x400/?ripe-mangoes',
     dataAiHint: 'ripe mangoes',
     seller: 'Beatrice W.',
     location: 'Karen, Nairobi',
@@ -92,7 +92,7 @@ export const mockProducts: Product[] = [
     name: 'Carrots (1kg)',
     price: 100,
     category: 'Vegetables',
-    imageUrl: 'https://placehold.co/600x400.png',
+    imageUrl: 'https://source.unsplash.com/600x400/?fresh-carrots',
     dataAiHint: 'fresh carrots',
     seller: 'Mama Agnes',
     location: 'Westlands, Nairobi',
@@ -113,7 +113,7 @@ export const mockProducts: Product[] = [
     name: 'Ripe Bananas (Bunch)',
     price: 150,
     category: 'Fruits',
-    imageUrl: 'https://placehold.co/600x400.png',
+    imageUrl: 'https://source.unsplash.com/600x400/?ripe-bananas',
     dataAiHint: 'ripe bananas',
     seller: 'David M.',
     location: 'Ngong Road, Nairobi',
@@ -135,7 +135,7 @@ export const mockProducts: Product[] = [
     price: 90,
     originalPrice: 110,
     category: 'Vegetables',
-    imageUrl: 'https://placehold.co/600x400.png',
+    imageUrl: 'https://source.unsplash.com/600x400/?fresh-onions',
     dataAiHint: 'fresh onions',
     seller: 'Farmer Joseph',
     location: 'Limuru, Kiambu',
@@ -156,13 +156,13 @@ export const mockProducts: Product[] = [
     name: 'Fresh Farm Eggs (Dozen)',
     price: 280,
     category: 'Dairy & Eggs',
-    imageUrl: 'https://placehold.co/600x400.png',
+    imageUrl: 'https://source.unsplash.com/600x400/?farm-eggs',
     dataAiHint: 'farm eggs',
     seller: 'Esther K.',
     location: 'Ruiru, Kiambu',
     distance: '12km away',
     freshness: 'Fresh',
-    isOrganic: false, 
+    isOrganic: false,
     stock: 70,
     description: 'Farm fresh eggs, collected daily. Rich in protein.',
     fertilizerUsed: 'N/A',
@@ -177,7 +177,7 @@ export const mockProducts: Product[] = [
     name: 'Whole Milk (1 Litre)',
     price: 100,
     category: 'Dairy & Eggs',
-    imageUrl: 'https://placehold.co/600x400.png',
+    imageUrl: 'https://source.unsplash.com/600x400/?milk-bottle',
     dataAiHint: 'milk bottle',
     seller: 'Green Pastures Dairy',
     location: 'Naivasha, Nakuru',
@@ -194,5 +194,4 @@ export const mockProducts: Product[] = [
     reviews: 180,
   }
 ];
-
     
