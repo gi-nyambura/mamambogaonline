@@ -11,7 +11,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Filter, ListFilter } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "../ui/sheet";
 
-const categories = ["All", "Vegetables", "Fruits", "Leafy Greens", "Herbs"];
+const categories = ["All", "Vegetables", "Fruits", "Leafy Greens", "Herbs", "Dairy & Eggs", "Meat & Poultry"];
 const freshnessOptions = ["All", "Fresh", "1-day old", "2-days old"];
 const sortOptions = [
   { value: "price_asc", label: "Price: Low to High" },
@@ -31,8 +31,8 @@ export function ProductFilters() {
           <AccordionContent className="space-y-2 pt-2">
             {categories.map((category) => (
               <div key={category} className="flex items-center space-x-2">
-                <Checkbox id={`cat-${category.toLowerCase()}`} />
-                <Label htmlFor={`cat-${category.toLowerCase()}`} className="font-normal">{category}</Label>
+                <Checkbox id={`cat-${category.toLowerCase().replace(/\s+/g, '-')}`} />
+                <Label htmlFor={`cat-${category.toLowerCase().replace(/\s+/g, '-')}`} className="font-normal">{category}</Label>
               </div>
             ))}
           </AccordionContent>
@@ -116,13 +116,15 @@ export function ProductFilters() {
               <ListFilter className="h-6 w-6" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="bottom" className="h-[80vh] p-4 flex flex-col overflow-y-auto">
-            <SheetHeader>
-             <SheetTitle className="text-xl font-semibold mb-4 font-poppins text-left">Filters</SheetTitle>
+          <SheetContent side="bottom" className="h-[80vh] p-0 flex flex-col">
+            <SheetHeader className="p-4 border-b">
+             <SheetTitle className="text-xl font-semibold font-poppins text-left">Filters</SheetTitle>
             </SheetHeader>
-            <div className="overflow-y-auto flex-grow mt-4 pr-2"> 
-              {filtersContent}
-            </div>
+            <ScrollArea className="flex-grow">
+              <div className="p-4">
+                {filtersContent}
+              </div>
+            </ScrollArea>
           </SheetContent>
         </Sheet>
       </div>

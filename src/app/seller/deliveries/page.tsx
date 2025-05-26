@@ -309,5 +309,4 @@ export default function SellerDeliveriesPage() {
 
 // To enable dynamic rendering for this page as it relies on client side state
 export const dynamic = 'force-dynamic';
-
     

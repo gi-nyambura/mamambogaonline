@@ -137,7 +137,7 @@ export default function SignupPage() {
               </div>
               <div className="space-y-1">
                 <Label htmlFor="lastName">Last Name</Label>
-                <div className="relative"> {/* This div was missing */}
+                <div className="relative">
                   <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   <Input 
                     id="lastName" 

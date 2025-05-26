@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { ShoppingCart, Search, Menu, LogOut, User as UserIcon, Loader2, Truck, Archive, ShieldAlert, Settings as SettingsIcon } from 'lucide-react';
+import { ShoppingCart, UserCircle as UserIcon, Search, Menu, LogOut, Loader2, Truck, Archive as PackageIcon, ShieldAlert, Settings as SettingsIcon, BarChart3 as AnalyticsIcon } from 'lucide-react'; // Changed Package to PackageIcon and BarChart3 to AnalyticsIcon
 import { Logo } from './Logo';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,7 +21,6 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  DropdownMenuGroup,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -33,23 +32,23 @@ const navLinks = [
 ];
 
 const buyerNavLinks = [
-  { href: '/my-orders', label: 'My Orders', icon: Archive },
+  { href: '/my-orders', label: 'My Orders', icon: PackageIcon },
   { href: '/buyer-dashboard', label: 'My Dashboard', icon: UserIcon },
 ];
 
 const sellerNavLinks = [
   { href: '/seller/dashboard', label: 'Dashboard', icon: UserIcon },
-  { href: '/seller/products', label: 'My Products', icon: Archive },
+  { href: '/seller/products', label: 'My Products', icon: PackageIcon },
   { href: '/seller/orders', label: 'Customer Orders', icon: ShoppingCart },
   { href: '/seller/deliveries', label: 'Track Deliveries', icon: Truck },
-  { href: '/seller/analytics', label: 'Analytics', icon: Loader2 }, 
+  { href: '/seller/analytics', label: 'Analytics', icon: AnalyticsIcon }, // Changed from Loader2
   { href: '/seller/recommendations', label: 'AI Recommendations', icon: Search }, 
 ];
 
 const adminNavLinks = [
   { href: '/admin/dashboard', label: 'Admin Dashboard', icon: ShieldAlert },
-  { href: '/admin/users', label: 'Manage Users', icon: UserIcon },
-  { href: '/admin/sellers', label: 'Manage Sellers', icon: Archive },
+  { href: '/admin/users', label: 'Manage Users', icon: UserIcon }, // Placeholder link
+  { href: '/admin/sellers', label: 'Manage Sellers', icon: PackageIcon }, // Placeholder link
 ];
 
 
@@ -82,7 +81,7 @@ export function Header() {
 
   const commonNavLinks = [...navLinks];
   let roleSpecificNavLinks: { href: string; label: string; icon: React.ElementType }[] = [];
-  let profileLink = "/profile"; // Default, will be overridden
+  let profileLink = "/profile/settings"; // Default, will be overridden
   let profileLabel = "My Profile"; // Default, will be overridden
 
   if (user) {
@@ -184,7 +183,7 @@ export function Header() {
                 )}
                 <DropdownMenuSeparator />
                  <DropdownMenuItem asChild>
-                   <Link href="/profile/settings" className="flex items-center"> {/* Placeholder settings link */}
+                   <Link href="/profile/settings" className="flex items-center">
                      <SettingsIcon className="mr-2 h-4 w-4" />
                      <span>Settings</span>
                    </Link>
@@ -253,7 +252,7 @@ export function Header() {
                   ))}
                    {user && (
                      <Link
-                        href="/profile/settings" // Placeholder settings link
+                        href="/profile/settings"
                         className={cn(
                             "text-lg font-medium transition-colors hover:text-primary flex items-center",
                             pathname === "/profile/settings" ? "text-primary" : "text-foreground/80"
@@ -269,7 +268,6 @@ export function Header() {
                        <Button variant="outline" disabled><Loader2 className="mr-2 h-4 w-4 animate-spin"/>Loading...</Button>
                     ) : user ? (
                       <>
-                        {/* The dashboard/profile link is already covered by roleSpecificNavLinks for mobile */}
                         <Button variant="destructive" onClick={handleLogout}>Log Out</Button>
                       </>
                     ) : (

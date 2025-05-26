@@ -144,5 +144,4 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
     </AppShell>
   );
 }
-
     

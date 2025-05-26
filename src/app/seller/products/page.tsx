@@ -3,7 +3,7 @@
 
 import { AppShell } from "@/components/layout/AppShell";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { mockProducts, type Product } from "@/data/products";
 import { Edit, PlusCircle, Trash2, Eye, ShoppingBag } from "lucide-react"; // Added ShoppingBag

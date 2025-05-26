@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { Package, User, MapPin, Phone, Edit, Printer, FileText, Truck, CheckCircle } from "lucide-react";
+import { Package, User, Mail, MapPin, Phone, Edit, Printer, FileText, Truck, CheckCircle } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
