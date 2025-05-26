@@ -41,14 +41,14 @@ const sellerNavLinks = [
   { href: '/seller/products', label: 'My Products', icon: PackageIcon },
   { href: '/seller/orders', label: 'Customer Orders', icon: ShoppingCart },
   { href: '/seller/deliveries', label: 'Track Deliveries', icon: Truck },
-  { href: '/seller/analytics', label: 'Analytics', icon: AnalyticsIcon }, 
-  { href: '/seller/recommendations', label: 'Market Insights', icon: Lightbulb }, 
+  { href: '/seller/analytics', label: 'Analytics', icon: AnalyticsIcon },
+  { href: '/seller/recommendations', label: 'Market Insights', icon: Lightbulb },
 ];
 
 const adminNavLinks = [
   { href: '/admin/dashboard', label: 'Admin Dashboard', icon: ShieldAlert },
-  { href: '/admin/users', label: 'Manage Users', icon: UserCircle }, 
-  { href: '/admin/sellers', label: 'Manage Sellers', icon: PackageIcon }, 
+  { href: '/admin/users', label: 'Manage Users', icon: UserCircle },
+  { href: '/admin/sellers', label: 'Manage Sellers', icon: PackageIcon },
 ];
 
 
@@ -64,13 +64,13 @@ export function Header() {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      router.push('/login'); 
+      router.push('/login');
       if (mobileMenuOpen) setMobileMenuOpen(false);
     } catch (error) {
       console.error("Error signing out: ", error);
     }
   };
-  
+
   const getInitials = () => {
     if (user?.firstName && user?.lastName) return `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase();
     if (user?.firstName) return user.firstName.charAt(0).toUpperCase();
@@ -81,8 +81,8 @@ export function Header() {
 
   const commonNavLinks = [...navLinks];
   let roleSpecificNavLinks: { href: string; label: string; icon: React.ElementType }[] = [];
-  let profileLink = "/profile/settings"; 
-  let profileLabel = "My Profile"; 
+  let profileLink = "/profile/settings";
+  let profileLabel = "My Profile";
 
   if (user) {
     if (user.role === 'admin') {
@@ -90,13 +90,13 @@ export function Header() {
       profileLabel = "Admin Dashboard";
       roleSpecificNavLinks = adminNavLinks;
     } else if (user.role === 'seller') {
-      profileLink = "/seller/dashboard"; 
+      profileLink = "/seller/dashboard";
       profileLabel = "Seller Dashboard";
       roleSpecificNavLinks = sellerNavLinks;
-    } else { 
-      profileLink = "/buyer-dashboard"; 
+    } else {
+      profileLink = "/buyer-dashboard";
       profileLabel = "My Dashboard";
-      roleSpecificNavLinks = buyerNavLinks; 
+      roleSpecificNavLinks = buyerNavLinks;
     }
   }
 
@@ -105,7 +105,7 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Logo />
-        
+
         <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
           {commonNavLinks.map((link) => (
             <Link
@@ -128,7 +128,7 @@ export function Header() {
               <Search className="h-4 w-4" />
             </Button>
           </div>
-          
+
           <Button variant="ghost" size="icon" asChild>
             <Link href="/cart">
               <ShoppingCart className="h-5 w-5" />
@@ -164,27 +164,26 @@ export function Header() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link href={profileLink} className="flex items-center">
-                    {user.role === 'admin' ? <ShieldAlert className="mr-2 h-4 w-4" /> : <UserCircle className="mr-2 h-4 w-4" /> }
+                    {user.role === 'admin' ? <ShieldAlert className="mr-2 h-4 w-4" /> : <UserCircle className="mr-2 h-4 w-4" />}
                     <span>{profileLabel}</span>
                   </Link>
                 </DropdownMenuItem>
-                
+
                 {roleSpecificNavLinks.filter(link => link.href !== profileLink).map(link => (
-                         <DropdownMenuItem key={link.href} asChild>
-                            <Link href={link.href} className="flex items-center">
-                                <link.icon className="mr-2 h-4 w-4" />
-                                <span>{link.label}</span>
-                            </Link>
-                        </DropdownMenuItem>
-                    ))}
-                  </>
-                )}
+                  <DropdownMenuItem key={link.href} asChild>
+                    <Link href={link.href} className="flex items-center">
+                      <link.icon className="mr-2 h-4 w-4" />
+                      <span>{link.label}</span>
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+                
                 <DropdownMenuSeparator />
-                 <DropdownMenuItem asChild>
-                   <Link href="/profile/settings" className="flex items-center">
-                     <SettingsIcon className="mr-2 h-4 w-4" />
-                     <span>Settings</span>
-                   </Link>
+                <DropdownMenuItem asChild>
+                  <Link href="/profile/settings" className="flex items-center">
+                    <SettingsIcon className="mr-2 h-4 w-4" />
+                    <span>Settings</span>
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleLogout} className="flex items-center">
                   <LogOut className="mr-2 h-4 w-4" />
@@ -193,10 +192,10 @@ export function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-             <div className="hidden md:block">
-               <Button variant="outline" size="sm" asChild>
-                  <Link href="/login">Login</Link>
-               </Button>
+            <div className="hidden md:block">
+              <Button variant="outline" size="sm" asChild>
+                <Link href="/login">Login</Link>
+              </Button>
             </div>
           )}
 
@@ -210,13 +209,13 @@ export function Header() {
             </SheetTrigger>
             <SheetContent side="left" className="w-full max-w-xs bg-background p-0">
               <SheetHeader className="p-6 pb-2 border-b">
-                 <Logo /> 
-                 <SheetTitle className="sr-only">Mobile Navigation Menu</SheetTitle>
+                <Logo />
+                <SheetTitle className="sr-only">Mobile Navigation Menu</SheetTitle>
               </SheetHeader>
               <div className="flex flex-col space-y-6 p-6 pt-4">
                 <div className="relative">
                   <Input type="search" placeholder="Search produce..." className="pr-10 h-9" />
-                   <Button variant="ghost" size="icon" className="absolute right-0 top-0 h-9 w-9 text-muted-foreground">
+                  <Button variant="ghost" size="icon" className="absolute right-0 top-0 h-9 w-9 text-muted-foreground">
                     <Search className="h-4 w-4" />
                   </Button>
                 </div>
@@ -234,9 +233,9 @@ export function Header() {
                       {link.label}
                     </Link>
                   ))}
-                  
+
                   {user && roleSpecificNavLinks.map((link) => (
-                     <Link
+                    <Link
                       key={link.href}
                       href={link.href}
                       className={cn(
@@ -248,36 +247,36 @@ export function Header() {
                       <link.icon className="mr-2 h-5 w-5" /> {link.label}
                     </Link>
                   ))}
-                   {user && (
-                     <Link
-                        href="/profile/settings"
-                        className={cn(
-                            "text-lg font-medium transition-colors hover:text-primary flex items-center",
-                            pathname === "/profile/settings" ? "text-primary" : "text-foreground/80"
-                        )}
-                        onClick={() => setMobileMenuOpen(false)}
-                        >
-                        <SettingsIcon className="mr-2 h-5 w-5" /> Settings
+                  {user && (
+                    <Link
+                      href="/profile/settings"
+                      className={cn(
+                        "text-lg font-medium transition-colors hover:text-primary flex items-center",
+                        pathname === "/profile/settings" ? "text-primary" : "text-foreground/80"
+                      )}
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <SettingsIcon className="mr-2 h-5 w-5" /> Settings
                     </Link>
-                   )}
+                  )}
                 </nav>
                 <div className="flex flex-col space-y-2 pt-4 border-t">
-                    {loadingAuthState ? (
-                       <Button variant="outline" disabled><Loader2 className="mr-2 h-4 w-4 animate-spin"/>Loading...</Button>
-                    ) : user ? (
-                      <>
-                        <Button variant="destructive" onClick={handleLogout}>Log Out</Button>
-                      </>
-                    ) : (
-                      <>
-                        <Button variant="outline" asChild>
-                            <Link href="/login" onClick={() => setMobileMenuOpen(false)}>Login</Link>
-                        </Button>
-                         <Button variant="default" asChild>
-                            <Link href="/signup" onClick={() => setMobileMenuOpen(false)}>Sign Up</Link>
-                        </Button>
-                      </>
-                    )}
+                  {loadingAuthState ? (
+                    <Button variant="outline" disabled><Loader2 className="mr-2 h-4 w-4 animate-spin" />Loading...</Button>
+                  ) : user ? (
+                    <>
+                      <Button variant="destructive" onClick={handleLogout}>Log Out</Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button variant="outline" asChild>
+                        <Link href="/login" onClick={() => setMobileMenuOpen(false)}>Login</Link>
+                      </Button>
+                      <Button variant="default" asChild>
+                        <Link href="/signup" onClick={() => setMobileMenuOpen(false)}>Sign Up</Link>
+                      </Button>
+                    </>
+                  )}
                 </div>
               </div>
             </SheetContent>
@@ -287,5 +286,4 @@ export function Header() {
     </header>
   );
 }
-
     
