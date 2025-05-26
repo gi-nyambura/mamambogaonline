@@ -5,19 +5,19 @@ export interface Product {
   price: number;
   originalPrice?: number;
   category: string;
-  imageUrl: string;
+  imageUrl: string; 
+  dataAiHint: string; 
   seller: string;
-  location: string; // e.g., "Nairobi", "Kiambu"
-  distance?: string; // e.g., "2km away"
+  location: string; 
+  distance?: string; 
   freshness: 'Fresh' | '1-day old' | '2-days old' | '3+ days old';
   isOrganic: boolean;
   stock: number;
   description: string;
   rating?: number;
   reviews?: number;
-  dataAiHint: string; // Keywords for Unsplash, e.g., "fresh tomatoes"
   fertilizerUsed?: string;
-  fertilizerLastUsedDate?: string; // Consider ISO string or Date object
+  fertilizerLastUsedDate?: string; 
   fertilizerApplicationMethod?: string;
   fertilizerBatchNumber?: string;
 }
@@ -28,7 +28,7 @@ export const mockProducts: Product[] = [
     name: 'Fresh Tomatoes (1kg)',
     price: 120,
     category: 'Vegetables',
-    imageUrl: 'https://source.unsplash.com/600x400/?fresh-tomatoes',
+    imageUrl: 'https://images.unsplash.com/photo-1561136594-7247da069df7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80',
     dataAiHint: 'fresh tomatoes',
     seller: 'Mama Agnes',
     location: 'Westlands, Nairobi',
@@ -50,7 +50,7 @@ export const mockProducts: Product[] = [
     price: 80,
     originalPrice: 100,
     category: 'Leafy Greens',
-    imageUrl: 'https://source.unsplash.com/600x400/?spinach-leaves',
+    imageUrl: 'https://images.unsplash.com/photo-1576045057995-568f588f67fb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80',
     dataAiHint: 'spinach leaves',
     seller: 'John K.',
     location: 'Kasarani, Nairobi',
@@ -71,7 +71,7 @@ export const mockProducts: Product[] = [
     name: 'Sweet Mangoes (Pack of 3)',
     price: 250,
     category: 'Fruits',
-    imageUrl: 'https://source.unsplash.com/600x400/?ripe-mangoes',
+    imageUrl: 'https://images.unsplash.com/photo-1591073137219-0f135c8c63e6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80',
     dataAiHint: 'ripe mangoes',
     seller: 'Beatrice W.',
     location: 'Karen, Nairobi',
@@ -92,7 +92,7 @@ export const mockProducts: Product[] = [
     name: 'Carrots (1kg)',
     price: 100,
     category: 'Vegetables',
-    imageUrl: 'https://source.unsplash.com/600x400/?fresh-carrots',
+    imageUrl: 'https://images.unsplash.com/photo-1590868309235-ea34bed7bd7f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80',
     dataAiHint: 'fresh carrots',
     seller: 'Mama Agnes',
     location: 'Westlands, Nairobi',
@@ -113,7 +113,7 @@ export const mockProducts: Product[] = [
     name: 'Ripe Bananas (Bunch)',
     price: 150,
     category: 'Fruits',
-    imageUrl: 'https://source.unsplash.com/600x400/?ripe-bananas',
+    imageUrl: 'https://images.unsplash.com/photo-1528825871115-3581a5387919?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80',
     dataAiHint: 'ripe bananas',
     seller: 'David M.',
     location: 'Ngong Road, Nairobi',
@@ -135,7 +135,7 @@ export const mockProducts: Product[] = [
     price: 90,
     originalPrice: 110,
     category: 'Vegetables',
-    imageUrl: 'https://source.unsplash.com/600x400/?fresh-onions',
+    imageUrl: 'https://images.unsplash.com/photo-1580296690408-87c6f50738ac?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80',
     dataAiHint: 'fresh onions',
     seller: 'Farmer Joseph',
     location: 'Limuru, Kiambu',
@@ -156,7 +156,7 @@ export const mockProducts: Product[] = [
     name: 'Fresh Farm Eggs (Dozen)',
     price: 280,
     category: 'Dairy & Eggs',
-    imageUrl: 'https://source.unsplash.com/600x400/?farm-eggs',
+    imageUrl: 'https://images.unsplash.com/photo-1598965675045-4875593d7369?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80',
     dataAiHint: 'farm eggs',
     seller: 'Esther K.',
     location: 'Ruiru, Kiambu',
@@ -165,7 +165,7 @@ export const mockProducts: Product[] = [
     isOrganic: false,
     stock: 70,
     description: 'Farm fresh eggs, collected daily. Rich in protein.',
-    fertilizerUsed: 'N/A',
+    fertilizerUsed: 'N/A', 
     fertilizerLastUsedDate: 'N/A',
     fertilizerApplicationMethod: 'N/A',
     fertilizerBatchNumber: 'N/A',
@@ -177,14 +177,14 @@ export const mockProducts: Product[] = [
     name: 'Whole Milk (1 Litre)',
     price: 100,
     category: 'Dairy & Eggs',
-    imageUrl: 'https://source.unsplash.com/600x400/?milk-bottle',
+    imageUrl: 'https://images.unsplash.com/photo-1559598467-f8b76c8155d0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80',
     dataAiHint: 'milk bottle',
     seller: 'Green Pastures Dairy',
     location: 'Naivasha, Nakuru',
     distance: '45km away',
     freshness: 'Fresh',
     isOrganic: true,
-    fertilizerUsed: 'Grazed on organic pasture',
+    fertilizerUsed: 'Grazed on organic pasture', 
     fertilizerLastUsedDate: 'N/A',
     fertilizerApplicationMethod: 'N/A',
     fertilizerBatchNumber: 'N/A',
@@ -194,4 +194,5 @@ export const mockProducts: Product[] = [
     reviews: 180,
   }
 ];
+
     
