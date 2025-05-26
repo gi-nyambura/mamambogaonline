@@ -1,12 +1,12 @@
 
-"use client"; // Added "use client" for potential future client-side interactions
+"use client";
 
 import { AppShell } from "@/components/layout/AppShell";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { DollarSign, Eye, ShoppingBag, BarChart3, ListOrdered, Star, PlusCircle, Settings, TrendingUp, Truck } from "lucide-react";
+import { DollarSign, Eye, ShoppingBag, ListOrdered, Star, PlusCircle, Settings, TrendingUp, Truck, Archive as PackageIcon, Lightbulb } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -24,19 +24,20 @@ const mockRecentOrders = [
 ];
 
 const mockTopProducts = [
-  { id: "prod1", name: "Fresh Tomatoes (1kg)", imageUrl: "https://placehold.co/40x40.png", dataAiHint: "tomatoes", category: "Vegetables", unitsSold: 120, revenue: "KES 14,400" },
-  { id: "prod2", name: "Sweet Mangoes (Pack)", imageUrl: "https://placehold.co/40x40.png", dataAiHint: "mangoes", category: "Fruits", unitsSold: 90, revenue: "KES 22,500" },
-  { id: "prod3", name: "Spinach Bunch", imageUrl: "https://placehold.co/40x40.png", dataAiHint: "spinach", category: "Leafy Greens", unitsSold: 75, revenue: "KES 6,000" },
+  { id: "prod1", name: "Fresh Tomatoes (1kg)", imageUrl: "https://images.unsplash.com/photo-1561136594-7247da069df7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80", dataAiHint: "fresh tomatoes", category: "Vegetables", unitsSold: 120, revenue: "KES 14,400" },
+  { id: "prod2", name: "Sweet Mangoes (Pack)", imageUrl: "https://images.unsplash.com/photo-1591073137219-0f135c8c63e6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80", dataAiHint: "ripe mangoes", category: "Fruits", unitsSold: 90, revenue: "KES 22,500" },
+  { id: "prod3", name: "Spinach Bunch", imageUrl: "https://images.unsplash.com/photo-1576045057995-568f588f67fb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80", dataAiHint: "spinach leaves", category: "Leafy Greens", unitsSold: 75, revenue: "KES 6,000" },
 ];
 
 const quickActions = [
     { label: "Add New Product", href: "/seller/products/new", icon: PlusCircle },
     { label: "Manage Deliveries", href: "/seller/deliveries", icon: Truck },
     { label: "View Analytics", href: "/seller/analytics", icon: TrendingUp },
-    { label: "Account Settings", href: "/seller/settings", icon: Settings }, // Placeholder for settings page
+    { label: "Market Insights", href: "/seller/recommendations", icon: Lightbulb },
+    { label: "Account Settings", href: "/seller/settings", icon: Settings },
 ];
 
-export const dynamic = 'force-dynamic'; // Ensure dynamic rendering
+export const dynamic = 'force-dynamic';
 
 export default function SellerDashboardPage() {
   return (
@@ -121,7 +122,7 @@ export default function SellerDashboardPage() {
              <CardContent className="grid grid-cols-2 gap-4 sm:grid-cols-1">
                 {quickActions.map(action => (
                     <Button key={action.href} variant="outline" className="w-full justify-start text-left h-auto py-3" asChild>
-                        <Link href={action.href}>
+                        <Link href={action.href} className="flex items-center">
                             <action.icon className="mr-3 h-5 w-5 text-primary/80" />
                             <div>
                                 <span className="font-medium">{action.label}</span>
@@ -135,7 +136,7 @@ export default function SellerDashboardPage() {
 
         <Card className="shadow-lg mt-6">
           <CardHeader>
-            <CardTitle className="font-poppins flex items-center"><Star className="mr-2 h-5 w-5 text-primary"/>Top Performing Products</CardTitle>
+            <CardTitle className="font-poppins flex items-center"><PackageIcon className="mr-2 h-5 w-5 text-primary"/>Top Performing Products</CardTitle>
             <CardDescription>Your best-selling items this month.</CardDescription>
           </CardHeader>
           <CardContent>
