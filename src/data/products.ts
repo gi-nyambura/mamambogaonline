@@ -144,7 +144,7 @@ export const mockProducts: Product[] = [
     isOrganic: false,
     stock: 70,
     description: 'Farm fresh eggs, collected daily. Rich in protein.',
-    fertilizerUsed: 'N/A',
+    fertilizerUsed: 'N/A', // Example where fertilizer info might not apply
     rating: 4.7,
     reviews: 90,
   },
@@ -160,10 +160,12 @@ export const mockProducts: Product[] = [
     distance: '45km away',
     freshness: 'Fresh',
     isOrganic: true,
-    fertilizerUsed: 'Grazed on organic pasture',
+    fertilizerUsed: 'Grazed on organic pasture', // Example of different type of "fertilizer" info
     stock: 120,
     description: 'Fresh pasteurized whole milk from grass-fed cows.',
     rating: 4.9,
     reviews: 180,
   }
 ];
+
+    

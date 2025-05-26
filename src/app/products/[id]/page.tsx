@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { mockProducts } from "@/data/products";
 import type { Product } from "@/data/products";
-import { ShoppingCart, Star, Leaf, Truck, Sprout, Info, Hash } from "lucide-react";
+import { ShoppingCart, Star, Leaf, Truck, Sprout, Info } from "lucide-react"; // Removed Hash and Tag
 import Image from "next/image";
 import Link from "next/link";
 
@@ -127,13 +127,6 @@ export default function ProductDetailsPage({ params }: { params: { id: string } 
                         <div className="pt-3 mt-3 border-t">
                              <h4 className="font-medium text-muted-foreground mb-2 flex items-center"><Sprout className="mr-2 h-5 w-5 text-primary"/>Fertilizer Information:</h4>
                              <p><strong>Type:</strong> {product.fertilizerUsed}</p>
-                             {/* 
-                             // These fields were removed in the latest revert of src/data/products.ts
-                             // They would need to be re-added to the Product interface and mockData if desired.
-                             {product.fertilizerLastUsedDate && <p><strong>Last Used:</strong> {formatDate(product.fertilizerLastUsedDate)}</p>}
-                             {product.fertilizerApplicationMethod && <p><strong>Application:</strong> {product.fertilizerApplicationMethod}</p>}
-                             {product.fertilizerBatchNumber && <p className="flex items-center"><Hash className="mr-1 h-4 w-4"/><strong>Batch No:</strong> {product.fertilizerBatchNumber}</p>}
-                             */}
                         </div>
                     )}
                 </CardContent>
@@ -145,3 +138,5 @@ export default function ProductDetailsPage({ params }: { params: { id: string } 
     </AppShell>
   );
 }
+
+    
