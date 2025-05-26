@@ -5,13 +5,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { mockProducts } from "@/data/products";
 import type { Product } from "@/data/products";
-import { ShoppingCart, Star, Leaf, Truck, Sprout, Info } from "lucide-react";
+import { ShoppingCart, Star, Leaf, Truck, Sprout, Info, Hash } from "lucide-react"; // Added Hash icon
 import Image from "next/image";
 import Link from "next/link";
 
 // Helper function to format dates (optional, but good for display)
 const formatDate = (dateString: string | undefined) => {
-  if (!dateString) return "N/A";
+  if (!dateString || dateString === 'N/A') return "N/A";
   try {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -51,7 +51,7 @@ export default function ProductDetailsPage({ params }: { params: { id: string } 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-start">
           {/* Image Gallery (Simplified) */}
           <Card className="shadow-xl overflow-hidden rounded-lg">
-            <div className="relative aspect-square w-full">
+            <div className="relative aspect-[4/3] w-full"> {/* Changed to aspect ratio */}
               <Image
                 src={product.imageUrl}
                 alt={product.name}
@@ -80,7 +80,7 @@ export default function ProductDetailsPage({ params }: { params: { id: string } 
                  {product.rating && (
                     <div className="flex items-center gap-1 mt-2">
                         {[...Array(Math.floor(product.rating))].map((_, i) => <Star key={`full-${i}`} className="h-5 w-5 text-yellow-400 fill-yellow-400" />)}
-                        {product.rating % 1 !== 0 && <Star key="half" className="h-5 w-5 text-yellow-400 fill-yellow-200" />} 
+                        {product.rating % 1 !== 0 && <Star key="half" className="h-5 w-5 text-yellow-400 fill-yellow-200" />} {/* Basic half star */}
                         {[...Array(5 - Math.ceil(product.rating))].map((_, i) => <Star key={`empty-${i}`} className="h-5 w-5 text-muted-foreground/50 fill-muted-foreground/20" />)}
                         <span className="ml-1 text-sm text-muted-foreground">({product.reviews} reviews)</span>
                     </div>
@@ -114,7 +114,7 @@ export default function ProductDetailsPage({ params }: { params: { id: string } 
             
             <Card className="shadow-lg">
                 <CardHeader>
-                    <CardTitle className="font-poppins text-xl flex items-center"><Info className="mr-2 h-5 w-5 text-primary"/>Product Details</CardTitle>
+                    <CardTitle className="font-poppins text-xl flex items-center"><Info className="mr-2 h-5 w-5 text-primary"/>Product Provenance</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3 text-sm">
                     <div className="flex justify-between items-center">
@@ -127,12 +127,15 @@ export default function ProductDetailsPage({ params }: { params: { id: string } 
                         <span className="text-muted-foreground flex items-center"><Truck className="mr-2 h-4 w-4"/>Freshness:</span>
                         <span>{product.freshness}</span>
                     </div>
-                    {product.fertilizerUsed && (
+                    {(product.fertilizerUsed || product.fertilizerLastUsedDate || product.fertilizerApplicationMethod || product.fertilizerBatchNumber) && (
                         <div className="pt-3 mt-3 border-t">
-                             <h4 className="font-medium text-muted-foreground mb-1 flex items-center"><Sprout className="mr-2 h-4 w-4 text-primary"/>Fertilizer Information:</h4>
-                             <p><strong>Type:</strong> {product.fertilizerUsed}</p>
-                             <p><strong>Last Used:</strong> {formatDate(product.fertilizerLastUsedDate)}</p>
-                             <p><strong>Application Method:</strong> {product.fertilizerApplicationMethod || "N/A"}</p>
+                             <h4 className="font-medium text-muted-foreground mb-2 flex items-center"><Sprout className="mr-2 h-5 w-5 text-primary"/>Fertilizer Information:</h4>
+                             {product.fertilizerUsed && <p><strong>Type:</strong> {product.fertilizerUsed}</p>}
+                             {product.fertilizerLastUsedDate && <p><strong>Last Used:</strong> {formatDate(product.fertilizerLastUsedDate)}</p>}
+                             {product.fertilizerApplicationMethod && <p><strong>Application Method:</strong> {product.fertilizerApplicationMethod}</p>}
+                             {product.fertilizerBatchNumber && <p className="flex items-center">
+                                <Hash className="mr-1.5 h-3.5 w-3.5 text-muted-foreground"/><strong>Batch No:</strong> {product.fertilizerBatchNumber}
+                              </p>}
                         </div>
                     )}
                 </CardContent>
@@ -151,5 +154,3 @@ export default function ProductDetailsPage({ params }: { params: { id: string } 
     </AppShell>
   );
 }
-
-    
