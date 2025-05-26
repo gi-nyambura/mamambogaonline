@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { DollarSign, Eye, ShoppingBag, ListOrdered, Star, PlusCircle, Settings, TrendingUp, Truck, Archive as PackageIcon, Lightbulb } from "lucide-react";
+import { DollarSign, Eye, ShoppingBag, ListOrdered, Star, PlusCircle, Settings, TrendingUp, Truck, Archive as PackageIcon, Lightbulb, BarChart3, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -14,7 +14,8 @@ const metrics = [
   { title: "Total Sales (Month)", value: "KES 12,500", icon: DollarSign, trend: "+5.2%", color: "text-green-500" },
   { title: "Total Orders (Month)", value: "150", icon: ShoppingBag, trend: "+10", color: "text-blue-500" },
   { title: "Product Views (Week)", value: "2,800", icon: Eye, trend: "+25%", color: "text-indigo-500" },
-  { title: "Avg. Rating", value: "4.7", icon: Star, trend: "+0.1", color: "text-yellow-500" },
+  // New Card for Analytics Link
+  { title: "View Full Analytics", value: "Go to Analytics", icon: BarChart3, href: "/seller/analytics", isLink: true, color: "text-primary" },
 ];
 
 const mockRecentOrders = [
@@ -32,9 +33,8 @@ const mockTopProducts = [
 const quickActions = [
     { label: "Add New Product", href: "/seller/products/new", icon: PlusCircle },
     { label: "Manage Deliveries", href: "/seller/deliveries", icon: Truck },
-    { label: "View Analytics", href: "/seller/analytics", icon: TrendingUp },
     { label: "Market Insights", href: "/seller/recommendations", icon: Lightbulb },
-    { label: "Account Settings", href: "/seller/settings", icon: Settings }, // Assuming /seller/settings will be created
+    { label: "Account Settings", href: "/seller/settings", icon: Settings },
 ];
 
 export const dynamic = 'force-dynamic';
@@ -51,7 +51,24 @@ export default function SellerDashboardPage() {
         </div>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {metrics.map((metric) => (
+          {metrics.map((metric) => 
+            metric.isLink && metric.href ? (
+              <Link href={metric.href} key={metric.title} className="block hover:shadow-xl transition-shadow rounded-lg">
+                <Card className="shadow-lg h-full">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium text-muted-foreground">
+                      {metric.title}
+                    </CardTitle>
+                    <metric.icon className={`h-5 w-5 ${metric.color || 'text-muted-foreground'}`} />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold text-primary flex items-center">
+                        {metric.value} <ArrowRight className="ml-2 h-5 w-5"/>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            ) : (
             <Card key={metric.title} className="shadow-lg hover:shadow-xl transition-shadow">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -61,12 +78,15 @@ export default function SellerDashboardPage() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{metric.value}</div>
-                <p className={`text-xs ${metric.trend.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
-                  {metric.trend} from last period
-                </p>
+                {metric.trend && (
+                    <p className={`text-xs ${metric.trend.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
+                    {metric.trend} from last period
+                    </p>
+                )}
               </CardContent>
             </Card>
-          ))}
+           )
+          )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
