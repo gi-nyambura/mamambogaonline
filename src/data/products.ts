@@ -17,6 +17,9 @@ export interface Product {
   rating?: number;
   reviews?: number;
   fertilizerUsed?: string;
+  fertilizerLastUsedDate?: string;
+  fertilizerApplicationMethod?: string;
+  fertilizerBatchNumber?: string;
 }
 
 export const mockProducts: Product[] = [
@@ -33,6 +36,9 @@ export const mockProducts: Product[] = [
     freshness: 'Fresh',
     isOrganic: true,
     fertilizerUsed: 'Organic Compost',
+    fertilizerLastUsedDate: '2024-05-15',
+    fertilizerApplicationMethod: 'Soil incorporation',
+    fertilizerBatchNumber: 'OC-BATCH-001A',
     stock: 50,
     description: 'Juicy and ripe tomatoes, organically grown. Perfect for salads and cooking.',
     rating: 4.5,
@@ -52,6 +58,9 @@ export const mockProducts: Product[] = [
     freshness: 'Fresh',
     isOrganic: false,
     fertilizerUsed: 'CAN (Calcium Ammonium Nitrate)',
+    fertilizerLastUsedDate: '2024-06-01',
+    fertilizerApplicationMethod: 'Top dressing',
+    fertilizerBatchNumber: 'CAN-BATCH-072X',
     stock: 30,
     description: 'A healthy bunch of fresh spinach, great for stews and smoothies.',
     rating: 4.2,
@@ -70,6 +79,9 @@ export const mockProducts: Product[] = [
     freshness: 'Fresh',
     isOrganic: true,
     fertilizerUsed: 'Natural Manure',
+    fertilizerLastUsedDate: '2024-04-20',
+    fertilizerApplicationMethod: 'Basal application',
+    fertilizerBatchNumber: 'MANURE-BATCH-K03',
     stock: 20,
     description: 'Sweet and juicy Apple mangoes, directly from the farm.',
     rating: 4.8,
@@ -88,6 +100,9 @@ export const mockProducts: Product[] = [
     freshness: '1-day old',
     isOrganic: true,
     fertilizerUsed: 'Vermicompost',
+    fertilizerLastUsedDate: '2024-05-25',
+    fertilizerApplicationMethod: 'Soil amendment',
+    fertilizerBatchNumber: 'VC-BATCH-005B',
     stock: 40,
     description: 'Crunchy and sweet carrots, rich in vitamins.',
     rating: 4.3,
@@ -106,6 +121,9 @@ export const mockProducts: Product[] = [
     freshness: 'Fresh',
     isOrganic: false,
     fertilizerUsed: 'NPK 17-17-17',
+    fertilizerLastUsedDate: '2024-06-05',
+    fertilizerApplicationMethod: 'Foliar spray',
+    fertilizerBatchNumber: 'NPK-BATCH-N22C',
     stock: 60,
     description: 'Naturally ripened bananas, perfect for a quick snack or breakfast.',
     rating: 4.6,
@@ -125,6 +143,9 @@ export const mockProducts: Product[] = [
     freshness: 'Fresh',
     isOrganic: false,
     fertilizerUsed: 'DAP (Diammonium Phosphate)',
+    fertilizerLastUsedDate: '2024-05-10',
+    fertilizerApplicationMethod: 'Banding',
+    fertilizerBatchNumber: 'DAP-BATCH-L01F',
     stock: 100,
     description: 'Freshly harvested red onions, essential for Kenyan cuisine.',
     rating: 4.4,
@@ -141,10 +162,13 @@ export const mockProducts: Product[] = [
     location: 'Ruiru, Kiambu',
     distance: '12km away',
     freshness: 'Fresh',
-    isOrganic: false,
+    isOrganic: false, // Typically 'organic' for eggs refers to feed and living conditions
+    fertilizerUsed: 'N/A',
+    fertilizerLastUsedDate: 'N/A',
+    fertilizerApplicationMethod: 'N/A',
+    fertilizerBatchNumber: 'N/A',
     stock: 70,
     description: 'Farm fresh eggs, collected daily. Rich in protein.',
-    fertilizerUsed: 'N/A', // Example where fertilizer info might not apply
     rating: 4.7,
     reviews: 90,
   },
@@ -159,13 +183,14 @@ export const mockProducts: Product[] = [
     location: 'Naivasha, Nakuru',
     distance: '45km away',
     freshness: 'Fresh',
-    isOrganic: true,
-    fertilizerUsed: 'Grazed on organic pasture', // Example of different type of "fertilizer" info
+    isOrganic: true, // Assuming 'organic' refers to how cows are raised/fed
+    fertilizerUsed: 'Grazed on organic pasture',
+    fertilizerLastUsedDate: 'N/A', // Less relevant for dairy
+    fertilizerApplicationMethod: 'N/A',
+    fertilizerBatchNumber: 'N/A',
     stock: 120,
     description: 'Fresh pasteurized whole milk from grass-fed cows.',
     rating: 4.9,
     reviews: 180,
   }
 ];
-
-    

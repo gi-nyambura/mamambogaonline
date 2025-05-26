@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { mockProducts } from "@/data/products";
 import type { Product } from "@/data/products";
-import { ShoppingCart, Star, Leaf, Truck, Sprout, Info } from "lucide-react"; // Removed Hash and Tag
+import { ShoppingCart, Star, Leaf, Truck, Sprout, Info, Hash, CalendarDays } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -126,7 +126,24 @@ export default function ProductDetailsPage({ params }: { params: { id: string } 
                     {(product.fertilizerUsed && product.fertilizerUsed !== 'N/A') && (
                         <div className="pt-3 mt-3 border-t">
                              <h4 className="font-medium text-muted-foreground mb-2 flex items-center"><Sprout className="mr-2 h-5 w-5 text-primary"/>Fertilizer Information:</h4>
-                             <p><strong>Type:</strong> {product.fertilizerUsed}</p>
+                             <div className="space-y-1">
+                                <p><strong>Type:</strong> {product.fertilizerUsed}</p>
+                                {product.fertilizerLastUsedDate && product.fertilizerLastUsedDate !== 'N/A' && (
+                                    <p className="flex items-center">
+                                        <CalendarDays className="mr-2 h-4 w-4 text-muted-foreground"/>
+                                        <strong>Last Applied:</strong> {formatDate(product.fertilizerLastUsedDate)}
+                                    </p>
+                                )}
+                                {product.fertilizerApplicationMethod && product.fertilizerApplicationMethod !== 'N/A' && (
+                                    <p><strong>Application Method:</strong> {product.fertilizerApplicationMethod}</p>
+                                )}
+                                {product.fertilizerBatchNumber && product.fertilizerBatchNumber !== 'N/A' && (
+                                     <p className="flex items-center">
+                                        <Hash className="mr-2 h-4 w-4 text-muted-foreground"/>
+                                        <strong>Batch No:</strong> {product.fertilizerBatchNumber}
+                                    </p>
+                                )}
+                             </div>
                         </div>
                     )}
                 </CardContent>
@@ -138,5 +155,3 @@ export default function ProductDetailsPage({ params }: { params: { id: string } 
     </AppShell>
   );
 }
-
-    
