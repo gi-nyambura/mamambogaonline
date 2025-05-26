@@ -34,7 +34,7 @@ const quickActions = [
     { label: "Manage Deliveries", href: "/seller/deliveries", icon: Truck },
     { label: "View Analytics", href: "/seller/analytics", icon: TrendingUp },
     { label: "Market Insights", href: "/seller/recommendations", icon: Lightbulb },
-    { label: "Account Settings", href: "/seller/settings", icon: Settings },
+    { label: "Account Settings", href: "/seller/settings", icon: Settings }, // Assuming /seller/settings will be created
 ];
 
 export const dynamic = 'force-dynamic';

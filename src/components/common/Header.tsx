@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { ShoppingCart, UserCircle as UserIcon, Search, Menu, LogOut, Loader2, Truck, Archive as PackageIcon, ShieldAlert, Settings as SettingsIcon, BarChart3 as AnalyticsIcon } from 'lucide-react'; // Changed Package to PackageIcon and BarChart3 to AnalyticsIcon
+import { ShoppingCart, UserCircle as UserIcon, Search, Menu, LogOut, Loader2, Truck, Archive as PackageIcon, ShieldAlert, Settings as SettingsIcon, BarChart3 as AnalyticsIcon, Lightbulb } from 'lucide-react';
 import { Logo } from './Logo';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -41,8 +41,8 @@ const sellerNavLinks = [
   { href: '/seller/products', label: 'My Products', icon: PackageIcon },
   { href: '/seller/orders', label: 'Customer Orders', icon: ShoppingCart },
   { href: '/seller/deliveries', label: 'Track Deliveries', icon: Truck },
-  { href: '/seller/analytics', label: 'Analytics', icon: AnalyticsIcon }, // Changed from Loader2
-  { href: '/seller/recommendations', label: 'AI Recommendations', icon: Search }, 
+  { href: '/seller/analytics', label: 'Analytics', icon: AnalyticsIcon },
+  { href: '/seller/recommendations', label: 'Market Insights', icon: Lightbulb }, 
 ];
 
 const adminNavLinks = [
@@ -81,8 +81,8 @@ export function Header() {
 
   const commonNavLinks = [...navLinks];
   let roleSpecificNavLinks: { href: string; label: string; icon: React.ElementType }[] = [];
-  let profileLink = "/profile/settings"; // Default, will be overridden
-  let profileLabel = "My Profile"; // Default, will be overridden
+  let profileLink = "/profile/settings"; 
+  let profileLabel = "My Profile"; 
 
   if (user) {
     if (user.role === 'admin') {
@@ -93,7 +93,7 @@ export function Header() {
       profileLink = "/seller/dashboard"; 
       profileLabel = "Seller Dashboard";
       roleSpecificNavLinks = sellerNavLinks;
-    } else { // Buyer or unspecified
+    } else { 
       profileLink = "/buyer-dashboard"; 
       profileLabel = "My Dashboard";
       roleSpecificNavLinks = buyerNavLinks; 
@@ -289,5 +289,3 @@ export function Header() {
     </header>
   );
 }
-    
-    
