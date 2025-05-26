@@ -16,8 +16,9 @@ import { auth, db } from "@/lib/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { useAuth } from "@/providers/AuthProvider";
+import { useToast } from "@/hooks/use-toast"; // Added useToast import
 
-// IMPORTANT: This is the Firebase Admin User ID
+// IMPORTANT: This is the Firebase Admin User ID - REPLACE IF NEEDED
 const ADMIN_UID_PLACEHOLDER = "Kp4u2BMUUKUHZ10MZ8cNGYh9ZYw2"; 
 
 export const dynamic = 'force-dynamic'; // Force dynamic rendering
@@ -32,6 +33,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { user: authUser, loadingAuthState } = useAuth(); 
+  const { toast } = useToast(); // Initialized useToast
 
   useEffect(() => {
     // Clear any old localStorage data from previous non-Firebase flows
@@ -77,7 +79,8 @@ export default function LoginPage() {
       const userDocSnap = await getDoc(userDocRef);
 
       if (userDocSnap.exists()) {
-        const userData = userDocSnap.data() as { role?: string; [key: string]: any }; 
+        const userData = userDocSnap.data() as { role?: string; firstName?: string; [key: string]: any }; 
+        const welcomeName = userData.firstName || firebaseUser.displayName || firebaseUser.email;
 
         if (loginAs === 'admin') {
           if (firebaseUser.uid !== ADMIN_UID_PLACEHOLDER) {
@@ -89,10 +92,12 @@ export default function LoginPage() {
           } else {
             // Both UID and role match
             console.log("Admin login successful for:", firebaseUser.email);
+            toast({ title: "Login Successful!", description: `Welcome back, Admin ${welcomeName}!` });
             router.push('/admin/dashboard'); 
           }
         } else if (userData.role === loginAs) {
           console.log("Login successful for:", firebaseUser.email, "as", userData.role);
+          toast({ title: "Login Successful!", description: `Welcome back, ${welcomeName}!` });
           switch (userData.role) {
             case 'buyer':
               router.push('/buyer-dashboard');
@@ -101,11 +106,11 @@ export default function LoginPage() {
               router.push('/seller/dashboard');
               break;
             default:
-              setError("Unknown role. Please contact support.");
-              await auth.signOut();
+              // Should not happen if role is validated
+              router.push('/');
           }
         } else {
-          setError(`This account is registered as a ${userData.role || 'user with no role'}. Please select the correct login type or use the appropriate account.`);
+          setError(`This account is registered as a ${userData.role || 'user with no role'}. Please select the correct login type ('${loginAs}') or use the appropriate account.`);
           await auth.signOut(); 
         }
       } else {
@@ -259,3 +264,5 @@ export default function LoginPage() {
     </div>
   );
 }
+
+    
