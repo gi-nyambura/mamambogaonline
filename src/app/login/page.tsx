@@ -56,7 +56,7 @@ export default function LoginPage() {
 
 
   const handleLogin = async () => {
-    setError(null); // Clear previous errors at the start
+    setError(null); 
     setIsLoading(true);
 
     if (loginAs === 'admin' && ADMIN_UID_PLACEHOLDER === "REPLACE_WITH_YOUR_ADMIN_UID") {
@@ -64,10 +64,11 @@ export default function LoginPage() {
       setIsLoading(false);
       return;
     }
-     if (loginAs === 'admin' && ADMIN_UID_PLACEHOLDER === "Kp4u2BMUUKUHZ10MZ8cNGYh9ZYw2" && (email !== "your_actual_admin_email@example.com" /* replace with actual condition if needed */)) {
-       // This specific UID might have a specific email check for demo/testing; adjust if not needed.
-       // For now, we assume the UID check is the primary guard.
-    }
+    
+    // It's fine for the demo admin UID to be hardcoded, but for a real admin, email should be checked if necessary or use custom claims.
+    // if (loginAs === 'admin' && ADMIN_UID_PLACEHOLDER === "Kp4u2BMUUKUHZ10MZ8cNGYh9ZYw2" && (email !== "your_actual_admin_email@example.com" )) {
+    //    // This specific UID might have a specific email check for demo/testing; adjust if not needed.
+    // }
 
 
     if (!email || !password) {
@@ -89,24 +90,25 @@ export default function LoginPage() {
 
         if (loginAs === 'admin') {
           if (userData.role === 'admin' && firebaseUser.uid === ADMIN_UID_PLACEHOLDER) {
-            setError(null); // Ensure no error message is displayed
-            console.log("Admin login successful for:", firebaseUser.email);
+            setError(null); 
+            setIsLoading(false); // Set loading false before toast/redirect
             toast({ title: "Login Successful!", description: `Welcome back, Admin ${welcomeName}!` });
             router.push('/admin/dashboard');
           } else {
             let adminError = "Admin access denied.";
             if (userData.role !== 'admin') {
-              adminError += ` Your account role ('${userData.role || 'undefined'}') is not 'admin'.`;
+              adminError += ` Your account role ('${userData.role || 'undefined'}') is not 'admin'. (Found: ${userData.role}, Expected: admin).`;
             }
             if (firebaseUser.uid !== ADMIN_UID_PLACEHOLDER) {
-              adminError += ` Your UID (${firebaseUser.uid}) does not match the configured Admin UID.`;
+              adminError += ` Your UID (${firebaseUser.uid}) does not match the configured Admin UID (${ADMIN_UID_PLACEHOLDER}).`;
             }
             setError(adminError);
             await auth.signOut();
+            setIsLoading(false);
           }
         } else if (userData.role === loginAs) {
-          setError(null); // Explicitly clear error state before success actions
-          console.log("Login successful for:", firebaseUser.email, "as", userData.role);
+          setError(null);
+          setIsLoading(false); // Set loading false before toast/redirect
           toast({ title: "Login Successful!", description: `Welcome back, ${welcomeName}!` });
           switch (userData.role) {
             case 'buyer':
@@ -121,14 +123,16 @@ export default function LoginPage() {
         } else {
           setError(`This account is registered as a '${userData.role || 'user with no role'}'. Please select the correct login type ('${loginAs}') or use the appropriate account.`);
           await auth.signOut();
+          setIsLoading(false);
         }
       } else {
-        setError(`User data not found in Firestore for UID: ${firebaseUser.uid}. Please ensure a user document exists in the 'users' collection with a 'role' field.`);
+        setError(`User data not found in Firestore for UID: ${firebaseUser.uid}. Ensure a user document exists in 'users' collection with a 'role' field. Your UID is ${firebaseUser.uid}.`);
         await auth.signOut();
+        setIsLoading(false);
       }
     } catch (firebaseError: any) {
       console.error("Firebase Login Error:", firebaseError);
-      if (firebaseError.code === 'auth/user-not-found' || firebaseError.code === 'auth/wrong-password' || firebaseError.code === 'auth/invalid-credential') {
+      if (firebaseError.code === 'auth/invalid-credential' || firebaseError.code === 'auth/user-not-found' || firebaseError.code === 'auth/wrong-password') {
         setError("Invalid email or password.");
       } else if (firebaseError.code === 'auth/too-many-requests') {
         setError("Too many login attempts. Please try again later.");
@@ -138,9 +142,9 @@ export default function LoginPage() {
       else {
         setError(`Login failed: ${firebaseError.message}`);
       }
-    } finally {
-      setIsLoading(false);
+      setIsLoading(false); // Ensure loading is false on error
     }
+    // Removed finally block as setIsLoading(false) is handled in all paths.
   };
 
   if (loadingAuthState || (!loadingAuthState && authUser)) {
@@ -173,7 +177,7 @@ export default function LoginPage() {
           <CardDescription>Sign in to continue to Mama Mboga.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          {error && (
+          {!isLoading && error && (
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>{error}</AlertDescription>
