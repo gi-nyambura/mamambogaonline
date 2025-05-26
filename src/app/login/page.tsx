@@ -1,5 +1,5 @@
 
-"use client"; 
+"use client";
 
 import { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
@@ -16,10 +16,10 @@ import { auth, db } from "@/lib/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { useAuth } from "@/providers/AuthProvider";
-import { useToast } from "@/hooks/use-toast"; // Added useToast import
+import { useToast } from "@/hooks/use-toast";
 
 // IMPORTANT: This is the Firebase Admin User ID - REPLACE IF NEEDED
-const ADMIN_UID_PLACEHOLDER = "Kp4u2BMUUKUHZ10MZ8cNGYh9ZYw2"; 
+const ADMIN_UID_PLACEHOLDER = "Kp4u2BMUUKUHZ10MZ8cNGYh9ZYw2";
 
 export const dynamic = 'force-dynamic'; // Force dynamic rendering
 
@@ -32,8 +32,8 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { user: authUser, loadingAuthState } = useAuth(); 
-  const { toast } = useToast(); // Initialized useToast
+  const { user: authUser, loadingAuthState } = useAuth();
+  const { toast } = useToast();
 
   useEffect(() => {
     // Clear any old localStorage data from previous non-Firebase flows
@@ -43,27 +43,32 @@ export default function LoginPage() {
   useEffect(() => {
     if (!loadingAuthState && authUser) {
       if (authUser.role === 'admin') {
-        router.push('/admin/dashboard'); 
+        router.push('/admin/dashboard');
       } else if (authUser.role === 'seller') {
         router.push('/seller/dashboard');
       } else if (authUser.role === 'buyer') {
         router.push('/buyer-dashboard');
       } else {
-         router.push('/'); 
+         router.push('/');
       }
     }
   }, [authUser, loadingAuthState, router]);
 
 
   const handleLogin = async () => {
-    setError(null);
+    setError(null); // Clear previous errors at the start
     setIsLoading(true);
 
-    if (loginAs === 'admin' && ADMIN_UID_PLACEHOLDER === "REPLACE_WITH_YOUR_ADMIN_UID") { 
+    if (loginAs === 'admin' && ADMIN_UID_PLACEHOLDER === "REPLACE_WITH_YOUR_ADMIN_UID") {
       setError("CRITICAL: Admin UID has not been configured in src/app/login/page.tsx. Please update the ADMIN_UID_PLACEHOLDER variable with your Firebase Admin User ID. This is a security measure.");
       setIsLoading(false);
       return;
     }
+     if (loginAs === 'admin' && ADMIN_UID_PLACEHOLDER === "Kp4u2BMUUKUHZ10MZ8cNGYh9ZYw2" && (email !== "your_actual_admin_email@example.com" /* replace with actual condition if needed */)) {
+       // This specific UID might have a specific email check for demo/testing; adjust if not needed.
+       // For now, we assume the UID check is the primary guard.
+    }
+
 
     if (!email || !password) {
       setError("Please enter both email and password.");
@@ -79,23 +84,28 @@ export default function LoginPage() {
       const userDocSnap = await getDoc(userDocRef);
 
       if (userDocSnap.exists()) {
-        const userData = userDocSnap.data() as { role?: string; firstName?: string; [key: string]: any }; 
+        const userData = userDocSnap.data() as { role?: string; firstName?: string; [key: string]: any };
         const welcomeName = userData.firstName || firebaseUser.displayName || firebaseUser.email;
 
         if (loginAs === 'admin') {
-          if (firebaseUser.uid !== ADMIN_UID_PLACEHOLDER) {
-            setError(`Admin access denied. Your UID (${firebaseUser.uid}) does not match the configured Admin UID (${ADMIN_UID_PLACEHOLDER}).`);
-            await auth.signOut();
-          } else if (userData.role !== 'admin') {
-            setError(`Admin access denied. Your account role ('${userData.role || 'undefined'}') is not 'admin'. Please check Firestore (users/${firebaseUser.uid}).`);
-            await auth.signOut();
-          } else {
-            // Both UID and role match
+          if (userData.role === 'admin' && firebaseUser.uid === ADMIN_UID_PLACEHOLDER) {
+            setError(null); // Ensure no error message is displayed
             console.log("Admin login successful for:", firebaseUser.email);
             toast({ title: "Login Successful!", description: `Welcome back, Admin ${welcomeName}!` });
-            router.push('/admin/dashboard'); 
+            router.push('/admin/dashboard');
+          } else {
+            let adminError = "Admin access denied.";
+            if (userData.role !== 'admin') {
+              adminError += ` Your account role ('${userData.role || 'undefined'}') is not 'admin'.`;
+            }
+            if (firebaseUser.uid !== ADMIN_UID_PLACEHOLDER) {
+              adminError += ` Your UID (${firebaseUser.uid}) does not match the configured Admin UID.`;
+            }
+            setError(adminError);
+            await auth.signOut();
           }
         } else if (userData.role === loginAs) {
+          setError(null); // Explicitly clear error state before success actions
           console.log("Login successful for:", firebaseUser.email, "as", userData.role);
           toast({ title: "Login Successful!", description: `Welcome back, ${welcomeName}!` });
           switch (userData.role) {
@@ -106,12 +116,11 @@ export default function LoginPage() {
               router.push('/seller/dashboard');
               break;
             default:
-              // Should not happen if role is validated
               router.push('/');
           }
         } else {
-          setError(`This account is registered as a ${userData.role || 'user with no role'}. Please select the correct login type ('${loginAs}') or use the appropriate account.`);
-          await auth.signOut(); 
+          setError(`This account is registered as a '${userData.role || 'user with no role'}'. Please select the correct login type ('${loginAs}') or use the appropriate account.`);
+          await auth.signOut();
         }
       } else {
         setError(`User data not found in Firestore for UID: ${firebaseUser.uid}. Please ensure a user document exists in the 'users' collection with a 'role' field.`);
@@ -134,7 +143,7 @@ export default function LoginPage() {
     }
   };
 
-  if (loadingAuthState || (!loadingAuthState && authUser)) { 
+  if (loadingAuthState || (!loadingAuthState && authUser)) {
      return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-background">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
@@ -215,10 +224,10 @@ export default function LoginPage() {
             <Label htmlFor="email">Email Address</Label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input 
-                id="email" 
-                type="email" 
-                placeholder="you@example.com" 
+              <Input
+                id="email"
+                type="email"
+                placeholder="you@example.com"
                 className="pl-10"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -236,10 +245,10 @@ export default function LoginPage() {
             </div>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input 
-                id="password" 
-                type="password" 
-                placeholder="••••••••" 
+              <Input
+                id="password"
+                type="password"
+                placeholder="••••••••"
                 className="pl-10"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -264,5 +273,3 @@ export default function LoginPage() {
     </div>
   );
 }
-
-    
